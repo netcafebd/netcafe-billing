@@ -35,8 +35,8 @@ export default async function SettingsPage() {
           ispName: settings.ispName,
           supportPhone: settings.supportPhone,
           bkashNumber: settings.bkashNumber,
-          bkashQrCode: settings.bkashQrCode,
-          paymentInstructions: settings.paymentInstructions,
+          bkashQrCode: settings.bkashQrCode || "",
+          paymentInstructions: settings.paymentInstructions || "",
         }}
       />
     </div>

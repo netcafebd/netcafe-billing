@@ -76,15 +76,24 @@ if (fs.existsSync(standaloneDir)) {
   const standaloneServerJs = path.join(standaloneDir, "server.js");
   if (fs.existsSync(standaloneServerJs)) {
     let content = fs.readFileSync(standaloneServerJs, "utf8");
-    const threadLimitCode = `// Injected thread pool constraints for CloudLinux shared hosting
+    const threadLimitCode = `// Injected thread pool constraints & debug logger for CloudLinux shared hosting
 process.env.UV_THREADPOOL_SIZE = "1";
 process.env.TOKIO_WORKER_THREADS = "1";
 process.env.RAYON_NUM_THREADS = "1";
+
+const _fs = require("fs");
+const _path = require("path");
+const _origErr = console.error;
+console.error = function (...args) {
+  try {
+    const msg = "[" + new Date().toISOString() + "] " + args.map(a => (a && a.stack) ? a.stack : (typeof a === "object" ? JSON.stringify(a) : String(a))).join(" ") + "\\n";
+    _fs.appendFileSync(_path.join(__dirname, "debug.log"), msg);
+  } catch (e) {}
+  _origErr.apply(console, args);
+};
 `;
-    if (!content.includes("TOKIO_WORKER_THREADS")) {
-      fs.writeFileSync(standaloneServerJs, threadLimitCode + content, "utf8");
-      console.log("✔ Injected thread constraints into .next/standalone/server.js");
-    }
+    fs.writeFileSync(standaloneServerJs, threadLimitCode + content.replace(/\/\/ Injected thread pool constraints[\s\S]*?process\.env\.RAYON_NUM_THREADS = "1";\n?/g, ""), "utf8");
+    console.log("✔ Injected thread constraints and debug logger into .next/standalone/server.js");
   }
 
   console.log("✔ Standalone bundle is ready for cPanel Passenger deployment!");
