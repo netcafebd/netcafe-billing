@@ -1,0 +1,145 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  ADMIN
+  CUSTOMER
+}
+
+enum CustomerStatus {
+  ACTIVE
+  INACTIVE
+  SUSPENDED
+}
+
+enum BillStatus {
+  UNPAID
+  PAYMENT_SUBMITTED
+  PAID
+  OVERDUE
+  CANCELLED
+}
+
+enum PaymentMethod {
+  BKASH
+}
+
+enum PaymentStatus {
+  PENDING
+  VERIFIED
+  REJECTED
+}
+
+model User {
+  id           String    @id @default(uuid())
+  email        String    @unique
+  passwordHash String
+  role         Role      @default(CUSTOMER)
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+
+  customer     Customer?
+  auditLogs    AuditLog[]
+
+  @@map("users")
+}
+
+model Customer {
+  id             String         @id @default(uuid())
+  userId         String         @unique
+  customerCode   String         @unique
+  name           String
+  phone          String         @unique
+  email          String?
+  address        String
+  monthlyBill    Decimal        @db.Decimal(10, 2)
+  connectionDate DateTime       @default(now())
+  status         CustomerStatus @default(ACTIVE)
+  createdAt      DateTime       @default(now())
+  updatedAt      DateTime       @updatedAt
+
+  user           User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  bills          Bill[]
+  payments       Payment[]
+
+  @@map("customers")
+}
+
+model Bill {
+  id           String     @id @default(uuid())
+  customerId   String
+  billingMonth Int
+  billingYear  Int
+  amount       Decimal    @db.Decimal(10, 2)
+  dueDate      DateTime
+  status       BillStatus @default(UNPAID)
+  paidAt       DateTime?
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @updatedAt
+
+  customer     Customer   @relation(fields: [customerId], references: [id], onDelete: Cascade)
+  payments     Payment[]
+
+  @@unique([customerId, billingMonth, billingYear])
+  @@map("bills")
+}
+
+model Payment {
+  id              String        @id @default(uuid())
+  billId          String
+  customerId      String
+  amount          Decimal       @db.Decimal(10, 2)
+  method          PaymentMethod @default(BKASH)
+  transactionId   String        @unique
+  senderPhone     String
+  status          PaymentStatus @default(PENDING)
+  submittedAt     DateTime      @default(now())
+  verifiedAt      DateTime?
+  verifiedBy      String?
+  rejectionReason String?
+  notes           String?
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
+
+  bill            Bill          @relation(fields: [billId], references: [id], onDelete: Cascade)
+  customer        Customer      @relation(fields: [customerId], references: [id], onDelete: Cascade)
+
+  @@index([transactionId])
+  @@index([status])
+  @@map("payments")
+}
+
+model ISPSettings {
+  id                  String   @id @default(uuid())
+  ispName             String   @default("FiberNet Broadband ISP")
+  supportPhone        String   @default("01700000000")
+  bkashNumber         String   @default("01800000000")
+  bkashQrCode         String   @default("") @db.Text
+  paymentInstructions String   @default("1. Open bKash App\n2. Select 'Send Money'\n3. Enter ISP bKash Number\n4. Enter exact bill amount\n5. Complete transaction\n6. Copy Transaction ID and submit here") @db.Text
+  updatedAt           DateTime @updatedAt
+
+  @@map("isp_settings")
+}
+
+model AuditLog {
+  id         String   @id @default(uuid())
+  userId     String?
+  action     String
+  entityType String
+  entityId   String?
+  metadata   Json?
+  createdAt  DateTime @default(now())
+
+  user       User?    @relation(fields: [userId], references: [id], onDelete: SetNull)
+
+  @@index([action])
+  @@index([entityType])
+  @@map("audit_logs")
+}
+
