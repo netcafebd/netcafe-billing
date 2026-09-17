@@ -7,6 +7,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { updateISPSettingsAction } from "@/app/actions/settings.actions";
 import { QrCode, Phone, CheckCircle2, Copy } from "lucide-react";
+import { DEFAULT_BKASH_QR_IMAGE } from "@/lib/constants/qr";
 
 interface SettingsFormProps {
   initialSettings: {
@@ -173,25 +174,25 @@ export function SettingsForm({ initialSettings }: SettingsFormProps) {
             {/* QR Code display */}
             <div className="flex flex-col items-center justify-center p-4 bg-white rounded-xl border border-slate-200">
               <span className="text-xs font-medium text-slate-500 mb-2">Scan with bKash App</span>
-              {form.bkashQrCode ? (
-                form.bkashQrCode.startsWith("<svg") ? (
+              {(() => {
+                const qrSrc =
+                  form.bkashQrCode && form.bkashQrCode.trim() !== ""
+                    ? form.bkashQrCode
+                    : DEFAULT_BKASH_QR_IMAGE;
+
+                return qrSrc.startsWith("<svg") ? (
                   <div
                     className="h-44 w-44 flex items-center justify-center"
-                    dangerouslySetInnerHTML={{ __html: form.bkashQrCode }}
+                    dangerouslySetInnerHTML={{ __html: qrSrc }}
                   />
                 ) : (
                   <img
-                    src={form.bkashQrCode}
+                    src={qrSrc}
                     alt="bKash QR Code"
                     className="h-44 w-44 object-contain rounded-lg border border-slate-100 p-2"
                   />
-                )
-              ) : (
-                <div className="h-44 w-44 flex flex-col items-center justify-center bg-slate-50 rounded-lg border border-dashed border-slate-300 text-slate-400 text-xs">
-                  <QrCode className="h-10 w-10 mb-1 opacity-50" />
-                  No QR Code Configured
-                </div>
-              )}
+                );
+              })()}
             </div>
 
             {/* Instructions */}

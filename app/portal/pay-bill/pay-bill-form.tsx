@@ -20,6 +20,7 @@ import {
   AlertCircle,
 } from "lucide-react";
 import { BillStatus } from "@prisma/client";
+import { DEFAULT_BKASH_QR_IMAGE } from "@/lib/constants/qr";
 
 interface PayBillFormProps {
   bills: Array<{
@@ -205,27 +206,27 @@ export function PayBillForm({
             {/* QR Code */}
             <div className="flex flex-col items-center justify-center p-5 bg-slate-50 rounded-2xl border border-slate-200">
               <span className="text-xs font-semibold text-slate-600 mb-3 uppercase tracking-wider">
-                Or Scan bKash QR Code
+                Or Scan bKash Bangla QR
               </span>
-              {ispSettings.bkashQrCode ? (
-                ispSettings.bkashQrCode.startsWith("<svg") ? (
+              {(() => {
+                const qrSrc =
+                  ispSettings.bkashQrCode && ispSettings.bkashQrCode.trim() !== ""
+                    ? ispSettings.bkashQrCode
+                    : DEFAULT_BKASH_QR_IMAGE;
+
+                return qrSrc.startsWith("<svg") ? (
                   <div
-                    className="h-44 w-44 flex items-center justify-center bg-white p-2 rounded-xl border border-slate-200 shadow-xs"
-                    dangerouslySetInnerHTML={{ __html: ispSettings.bkashQrCode }}
+                    className="h-52 w-52 flex items-center justify-center bg-white p-2 rounded-xl border border-slate-200 shadow-xs"
+                    dangerouslySetInnerHTML={{ __html: qrSrc }}
                   />
                 ) : (
                   <img
-                    src={ispSettings.bkashQrCode}
+                    src={qrSrc}
                     alt="bKash QR Code"
-                    className="h-44 w-44 object-contain bg-white rounded-xl border border-slate-200 p-2 shadow-xs"
+                    className="h-52 w-52 object-contain bg-white rounded-xl border border-slate-200 p-2 shadow-xs"
                   />
-                )
-              ) : (
-                <div className="h-40 w-40 flex flex-col items-center justify-center bg-white rounded-xl border border-slate-200 text-slate-400 text-xs">
-                  <QrCode className="h-10 w-10 mb-1 opacity-50" />
-                  No QR Code
-                </div>
-              )}
+                );
+              })()}
             </div>
 
             {/* Instructions */}

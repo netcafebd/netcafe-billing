@@ -5,6 +5,8 @@ import { CustomerHeader } from "@/components/customer/header";
 import { PayBillForm } from "./pay-bill-form";
 import { BillStatus } from "@prisma/client";
 
+import { DEFAULT_BKASH_QR_IMAGE } from "@/lib/constants/qr";
+
 export const dynamic = "force-dynamic";
 
 interface Props {
@@ -48,10 +50,10 @@ export default async function PayBillPage({ searchParams }: Props) {
 
   const defaultSettings = settings || {
     ispName: "NETCAFE",
-    bkashNumber: "01799887766",
-    bkashQrCode: "",
+    bkashNumber: "01622 280 960",
+    bkashQrCode: DEFAULT_BKASH_QR_IMAGE,
     paymentInstructions:
-      "1. Open bKash App\n2. Select 'Send Money'\n3. Enter ISP bKash Number\n4. Enter exact bill amount\n5. Copy the Transaction ID\n6. Submit the Transaction ID here",
+      "1. Open bKash App\n2. Select 'Send Money'\n3. Enter ISP bKash Number: 01622 280 960 (বা QR স্ক্যান করুন)\n4. Enter exact bill amount\n5. Copy the Transaction ID\n6. Submit the Transaction ID here",
   };
 
   return (
@@ -74,7 +76,7 @@ export default async function PayBillPage({ searchParams }: Props) {
           ispSettings={{
             ispName: defaultSettings.ispName,
             bkashNumber: defaultSettings.bkashNumber,
-            bkashQrCode: defaultSettings.bkashQrCode,
+            bkashQrCode: defaultSettings.bkashQrCode || DEFAULT_BKASH_QR_IMAGE,
             paymentInstructions: defaultSettings.paymentInstructions,
           }}
           customerPhone={customer?.phone || ""}
