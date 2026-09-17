@@ -24,6 +24,7 @@ import {
   ExternalLink,
 } from "lucide-react";
 import { PaymentActions } from "./payment-actions";
+import { ProcessCleanupButton } from "./process-actions";
 import { getSystemProcessInfo } from "@/lib/services/system.service";
 
 export const dynamic = "force-dynamic";
@@ -301,15 +302,18 @@ export default async function AdminDashboardPage() {
               Live cPanel CloudLinux process & thread usage for your hosting account.
             </CardDescription>
           </div>
-          <a
-            href="/api/debug"
-            target="_blank"
-            rel="noreferrer"
-            className="inline-flex items-center gap-1.5 text-xs font-semibold text-blue-600 hover:text-blue-800 hover:underline"
-          >
-            Raw Diagnostics (JSON)
-            <ExternalLink className="h-3.5 w-3.5" />
-          </a>
+          <div className="flex items-center gap-3">
+            <ProcessCleanupButton />
+            <a
+              href="/api/debug"
+              target="_blank"
+              rel="noreferrer"
+              className="inline-flex items-center gap-1.5 text-xs font-semibold text-blue-600 hover:text-blue-800 hover:underline"
+            >
+              Raw Diagnostics (JSON)
+              <ExternalLink className="h-3.5 w-3.5" />
+            </a>
+          </div>
         </CardHeader>
         <CardContent className="pt-4 space-y-4">
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">

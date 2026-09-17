@@ -82,3 +82,38 @@ export function getSystemProcessInfo(): SystemProcessInfo {
   return info;
 }
 
+export function killZombieProcesses(): { killedPids: string[]; error?: string } {
+  if (process.platform !== "linux") {
+    return { killedPids: [] };
+  }
+
+  const currentPid = process.pid;
+  const killedPids: string[] = [];
+
+  try {
+    const stdout = cp.execSync("ps -u $(whoami) -o pid,comm --no-headers", {
+      timeout: 2500,
+      encoding: "utf8",
+    });
+
+    const lines = stdout.trim().split("\n").filter(Boolean);
+    for (const line of lines) {
+      const parts = line.trim().split(/\s+/);
+      const pidStr = parts[0];
+      const pid = parseInt(pidStr, 10);
+      const comm = parts.slice(1).join(" ");
+
+      if (pid && pid !== currentPid && (comm.includes("node") || comm.includes("next-server"))) {
+        try {
+          process.kill(pid, "SIGKILL");
+          killedPids.push(pidStr);
+        } catch (_) {}
+      }
+    }
+
+    return { killedPids };
+  } catch (e: any) {
+    return { killedPids, error: e?.message || String(e) };
+  }
+}
+
