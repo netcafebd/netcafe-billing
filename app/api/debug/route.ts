@@ -3,6 +3,8 @@ import { prisma } from "@/lib/db/prisma";
 import fs from "fs";
 import path from "path";
 
+import { getSystemProcessInfo } from "@/lib/services/system.service";
+
 export const dynamic = "force-dynamic";
 
 export async function GET() {
@@ -14,6 +16,7 @@ export async function GET() {
       DATABASE_URL_SET: !!process.env.DATABASE_URL,
       AUTH_SECRET_SET: !!process.env.AUTH_SECRET,
     },
+    system: getSystemProcessInfo(),
     tables: {},
     debugLog: null,
   };
