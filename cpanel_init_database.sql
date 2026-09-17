@@ -70,8 +70,8 @@ CREATE TABLE "isp_settings" (
     "ispName" TEXT NOT NULL DEFAULT 'NETCAFE',
     "supportPhone" TEXT NOT NULL DEFAULT '+880 1700-000000',
     "bkashNumber" TEXT NOT NULL DEFAULT '01700000000',
-    "bkashQrCode" TEXT,
-    "paymentInstructions" TEXT,
+    "bkashQrCode" TEXT DEFAULT '',
+    "paymentInstructions" TEXT DEFAULT '',
     "updatedAt" TIMESTAMP(3) NOT NULL,
     CONSTRAINT "isp_settings_pkey" PRIMARY KEY ("id")
 );

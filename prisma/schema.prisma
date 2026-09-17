@@ -121,8 +121,8 @@ model ISPSettings {
   ispName             String   @default("FiberNet Broadband ISP")
   supportPhone        String   @default("01700000000")
   bkashNumber         String   @default("01800000000")
-  bkashQrCode         String   @default("") @db.Text
-  paymentInstructions String   @default("1. Open bKash App\n2. Select 'Send Money'\n3. Enter ISP bKash Number\n4. Enter exact bill amount\n5. Complete transaction\n6. Copy Transaction ID and submit here") @db.Text
+  bkashQrCode         String?  @default("") @db.Text
+  paymentInstructions String?  @default("1. Open bKash App\n2. Select 'Send Money'\n3. Enter ISP bKash Number\n4. Enter exact bill amount\n5. Complete transaction\n6. Copy Transaction ID and submit here") @db.Text
   updatedAt           DateTime @updatedAt
 
   @@map("isp_settings")
