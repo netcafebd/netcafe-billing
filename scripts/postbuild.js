@@ -72,45 +72,14 @@ if (fs.existsSync(standaloneDir)) {
     }
   }
 
-  // 5. Inject thread limits, zombie process cleanup, & signal handlers into standalone server.js
+  // 5. Inject thread limits & debug logger into standalone server.js
   const standaloneServerJs = path.join(standaloneDir, "server.js");
   if (fs.existsSync(standaloneServerJs)) {
     let content = fs.readFileSync(standaloneServerJs, "utf8");
-    const threadLimitCode = `// Injected thread pool constraints & LVE Guard for CloudLinux shared hosting
+    const threadLimitCode = `// Injected thread pool constraints & debug logger for CloudLinux shared hosting
 process.env.UV_THREADPOOL_SIZE = "1";
 process.env.TOKIO_WORKER_THREADS = "1";
 process.env.RAYON_NUM_THREADS = "1";
-
-// Auto clean duplicate/zombie node processes from previous unkilled restarts
-if (process.platform === "linux") {
-  try {
-    const _cp = require("child_process");
-    const curPid = process.pid;
-    const stdout = _cp.execSync("ps -u $(whoami) -o pid,comm --no-headers", { timeout: 2000, encoding: "utf8" });
-    const lines = stdout.trim().split("\\n");
-    for (const line of lines) {
-      const parts = line.trim().split(/\\s+/);
-      const pid = parseInt(parts[0], 10);
-      const comm = parts.slice(1).join(" ");
-      if (pid && pid !== curPid && (comm.includes("node") || comm.includes("next-server"))) {
-        try {
-          process.kill(pid, "SIGKILL");
-          console.log("[LVE Guard] Cleaned up zombie process PID:", pid);
-        } catch (_) {}
-      }
-    }
-  } catch (_) {}
-}
-
-// Immediate clean exit on cPanel restart signals
-process.on("SIGTERM", () => {
-  console.log("[LVE Guard] Received SIGTERM, exiting cleanly...");
-  process.exit(0);
-});
-process.on("SIGINT", () => {
-  console.log("[LVE Guard] Received SIGINT, exiting cleanly...");
-  process.exit(0);
-});
 
 const _fs = require("fs");
 const _path = require("path");
@@ -126,7 +95,7 @@ console.error = function (...args) {
     // Clean any prior injected block
     const cleanContent = content.replace(/\/\/ Injected thread pool constraints[\s\S]*?_origErr\.apply\(console, args\);\s*};\n?/g, "");
     fs.writeFileSync(standaloneServerJs, threadLimitCode + cleanContent, "utf8");
-    console.log("✔ Injected thread constraints, zombie cleanup, and signal handlers into .next/standalone/server.js");
+    console.log("✔ Injected safe thread constraints and debug logger into .next/standalone/server.js");
   }
 
   console.log("✔ Standalone bundle is ready for cPanel Passenger deployment!");
