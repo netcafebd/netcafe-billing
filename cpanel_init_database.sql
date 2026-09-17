@@ -59,7 +59,7 @@ CREATE TABLE "payments" (
     "verifiedAt" TIMESTAMP(3),
     "verifiedBy" TEXT,
     "rejectionReason" TEXT,
-    "customerNote" TEXT,
+    "notes" TEXT,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
     CONSTRAINT "payments_pkey" PRIMARY KEY ("id")
@@ -78,11 +78,11 @@ CREATE TABLE "isp_settings" (
 
 CREATE TABLE "audit_logs" (
     "id" TEXT NOT NULL,
+    "userId" TEXT,
     "action" TEXT NOT NULL,
     "entityType" TEXT NOT NULL,
     "entityId" TEXT,
-    "adminId" TEXT,
-    "details" JSONB,
+    "metadata" JSONB,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     CONSTRAINT "audit_logs_pkey" PRIMARY KEY ("id")
 );

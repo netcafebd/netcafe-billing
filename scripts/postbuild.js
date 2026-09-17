@@ -72,6 +72,21 @@ if (fs.existsSync(standaloneDir)) {
     }
   }
 
+  // 5. Inject thread limits into standalone server.js
+  const standaloneServerJs = path.join(standaloneDir, "server.js");
+  if (fs.existsSync(standaloneServerJs)) {
+    let content = fs.readFileSync(standaloneServerJs, "utf8");
+    const threadLimitCode = `// Injected thread pool constraints for CloudLinux shared hosting
+process.env.UV_THREADPOOL_SIZE = "1";
+process.env.TOKIO_WORKER_THREADS = "1";
+process.env.RAYON_NUM_THREADS = "1";
+`;
+    if (!content.includes("TOKIO_WORKER_THREADS")) {
+      fs.writeFileSync(standaloneServerJs, threadLimitCode + content, "utf8");
+      console.log("✔ Injected thread constraints into .next/standalone/server.js");
+    }
+  }
+
   console.log("✔ Standalone bundle is ready for cPanel Passenger deployment!");
 } else {
   console.log("ℹ Standalone directory not found (skipping postbuild copy).");
