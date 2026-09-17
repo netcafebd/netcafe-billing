@@ -3,6 +3,9 @@ import { prisma } from "@/lib/db/prisma";
 import { requireAdmin } from "@/lib/auth/session";
 import { AdminHeader } from "@/components/admin/header";
 import { SettingsForm } from "./settings-form";
+import { AdminPasswordForm } from "@/components/admin/admin-password-form";
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
+import { Lock } from "lucide-react";
 
 export const dynamic = "force-dynamic";
 
@@ -24,10 +27,10 @@ export default async function SettingsPage() {
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-8">
       <AdminHeader
-        title="ISP Billing & Payment Settings"
-        description="Configure your ISP branding, support line, bKash merchant/agent/personal receiving number and payment guidelines."
+        title="ISP Settings & Security"
+        description="Configure your ISP branding, bKash receiving number, payment guidelines, and update your administrator credentials."
       />
 
       <SettingsForm
@@ -39,6 +42,22 @@ export default async function SettingsPage() {
           paymentInstructions: settings.paymentInstructions || "",
         }}
       />
+
+      {/* Admin Security & Password Change Card */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="text-base flex items-center gap-2">
+            <Lock className="h-5 w-5 text-blue-600" />
+            Admin Security & Password
+          </CardTitle>
+          <CardDescription>
+            Change your administrator login password to protect access to billing and customer records.
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <AdminPasswordForm />
+        </CardContent>
+      </Card>
     </div>
   );
 }
