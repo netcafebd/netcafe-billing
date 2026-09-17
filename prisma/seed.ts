@@ -43,10 +43,10 @@ async function main() {
     data: {
       ispName: "NETCAFE",
       supportPhone: "+880 9612-000111",
-      bkashNumber: "01799887766",
-      bkashQrCode: `data:image/svg+xml;utf8,${encodeURIComponent(qrSvg)}`,
+      bkashNumber: "01622280960",
+      bkashQrCode: "/images/bkash-qr.png",
       paymentInstructions:
-        "1. Open your bKash App\n2. Select 'Send Money'\n3. Enter ISP bKash Number: 01799887766\n4. Enter the exact monthly bill amount\n5. In the reference field, write your Customer ID (e.g. CUST-0001)\n6. Enter your bKash PIN to confirm transaction\n7. Copy the 10-character Transaction ID (e.g. BL98K4J2M1)\n8. Return to this portal and submit the Transaction ID",
+        "1. Open your bKash App\n2. Select 'Send Money'\n3. Enter ISP bKash Number: 01622280960 (বা QR স্ক্যান করুন)\n4. Enter the exact monthly bill amount\n5. In the reference field, write your Customer ID\n6. Enter your bKash PIN to confirm transaction\n7. Copy the 10-character Transaction ID\n8. Return to this portal and submit the Transaction ID",
     },
   });
 

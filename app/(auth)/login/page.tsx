@@ -6,7 +6,7 @@ import { loginAction } from "@/app/actions/auth.actions";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Alert } from "@/components/shared/alert";
-import { Wifi, ShieldCheck, User, Lock, ArrowRight } from "lucide-react";
+import { Wifi, ArrowRight } from "lucide-react";
 
 export default function LoginPage() {
   const router = useRouter();
@@ -34,12 +34,6 @@ export default function LoginPage() {
       setError("An unexpected network error occurred.");
       setIsLoading(false);
     }
-  }
-
-  function fillDemo(id: string, pass: string) {
-    setIdentifier(id);
-    setPassword(pass);
-    setError(null);
   }
 
   return (
@@ -98,34 +92,6 @@ export default function LoginPage() {
               <ArrowRight className="h-4 w-4" />
             </Button>
           </form>
-
-          {/* Quick Demo Fill Buttons */}
-          <div className="mt-8 pt-6 border-t border-slate-100">
-            <p className="text-[11px] font-semibold text-slate-400 uppercase tracking-wider text-center mb-3">
-              Quick Demo Fill
-            </p>
-            <div className="grid grid-cols-2 gap-2">
-              <button
-                type="button"
-                onClick={() => fillDemo("admin@example.com", "Admin123!")}
-                className="flex items-center justify-center gap-1.5 rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 text-xs font-medium text-slate-700 hover:bg-slate-100 transition-colors"
-              >
-                <ShieldCheck className="h-3.5 w-3.5 text-blue-600" />
-                Admin Demo
-              </button>
-              <button
-                type="button"
-                onClick={() => fillDemo("CUST-0001", "Customer123!")}
-                className="flex items-center justify-center gap-1.5 rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 text-xs font-medium text-slate-700 hover:bg-slate-100 transition-colors"
-              >
-                <User className="h-3.5 w-3.5 text-emerald-600" />
-                Customer Demo
-              </button>
-            </div>
-            <p className="text-[11px] text-slate-400 text-center mt-3">
-              ⚠️ In production, default passwords must be changed immediately.
-            </p>
-          </div>
         </div>
 
         {/* Footer info */}

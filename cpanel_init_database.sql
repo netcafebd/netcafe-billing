@@ -119,12 +119,13 @@ VALUES (
 );
 
 -- 6. Seed Default ISP Settings
-INSERT INTO "isp_settings" ("id", "ispName", "supportPhone", "bkashNumber", "paymentInstructions", "updatedAt")
+INSERT INTO "isp_settings" ("id", "ispName", "supportPhone", "bkashNumber", "bkashQrCode", "paymentInstructions", "updatedAt")
 VALUES (
     'default-isp-setting',
     'NETCAFE',
     '+880 1700-000000',
-    '01799887766',
-    '1. bKash App open করুন\n2. Send Money সিলেক্ট করুন\n3. নম্বর দিন: 01799887766\n4. বিলের টাকা সেন্ড করুন\n5. Transaction ID টি কপি করে পোর্টালে সাবমিট করুন।',
+    '01622280960',
+    '/images/bkash-qr.png',
+    '1. bKash App open করুন\n2. Send Money সিলেক্ট করুন\n3. নম্বর দিন: 01622280960 (অথবা QR Code স্ক্যান করুন)\n4. বিলের টাকা সেন্ড করুন\n5. Transaction ID টি কপি করে পোর্টালে সাবমিট করুন।',
     NOW()
 );

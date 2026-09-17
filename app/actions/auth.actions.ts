@@ -138,3 +138,98 @@ export async function changePasswordAction(formData: FormData | Record<string, a
   return { success: true, message: "Password changed successfully!" };
 }
 
+export async function updateAdminAccountAction(params: {
+  newEmail?: string;
+  currentPassword: string;
+  newPassword?: string;
+}) {
+  const session = await requireAuth();
+
+  if (!params.currentPassword) {
+    return { success: false, message: "Current password is required to save changes." };
+  }
+
+  const user = await prisma.user.findUnique({
+    where: { id: session.userId },
+  });
+
+  if (!user) {
+    return { success: false, message: "User account not found." };
+  }
+
+  // 1. Verify current password
+  const isMatch = await bcrypt.compare(params.currentPassword, user.passwordHash);
+  if (!isMatch) {
+    return { success: false, message: "Current password is incorrect." };
+  }
+
+  const updateData: { email?: string; passwordHash?: string } = {};
+
+  // 2. Handle email update
+  if (params.newEmail && params.newEmail.trim().toLowerCase() !== user.email.toLowerCase()) {
+    const trimmedEmail = params.newEmail.trim().toLowerCase();
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(trimmedEmail)) {
+      return { success: false, message: "Please enter a valid email address." };
+    }
+
+    const existing = await prisma.user.findFirst({
+      where: {
+        email: trimmedEmail,
+        NOT: { id: user.id },
+      },
+    });
+    if (existing) {
+      return { success: false, message: "This email address is already in use by another account." };
+    }
+
+    updateData.email = trimmedEmail;
+  }
+
+  // 3. Handle password update
+  if (params.newPassword && params.newPassword.trim()) {
+    if (params.newPassword.trim().length < 6) {
+      return { success: false, message: "New password must be at least 6 characters long." };
+    }
+    updateData.passwordHash = await bcrypt.hash(params.newPassword.trim(), 10);
+  }
+
+  if (Object.keys(updateData).length === 0) {
+    return { success: false, message: "No changes detected to update." };
+  }
+
+  const updatedUser = await prisma.user.update({
+    where: { id: user.id },
+    data: updateData,
+  });
+
+  // Re-issue session cookie if email changed
+  if (updateData.email) {
+    await createSession({
+      ...session,
+      email: updatedUser.email,
+    });
+  }
+
+  await logAuditEvent({
+    userId: user.id,
+    action: "ACCOUNT_SETTINGS_UPDATED",
+    entityType: "User",
+    entityId: user.id,
+    metadata: {
+      emailChanged: !!updateData.email,
+      passwordChanged: !!updateData.passwordHash,
+    },
+  });
+
+  return {
+    success: true,
+    message: updateData.email && updateData.passwordHash
+      ? "Admin email and password updated successfully!"
+      : updateData.email
+      ? "Admin email updated successfully!"
+      : "Admin password updated successfully!",
+    newEmail: updatedUser.email,
+  };
+}
+

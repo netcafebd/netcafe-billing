@@ -10,7 +10,7 @@ import { Lock } from "lucide-react";
 export const dynamic = "force-dynamic";
 
 export default async function SettingsPage() {
-  await requireAdmin();
+  const session = await requireAdmin();
 
   let settings = await prisma.iSPSettings.findFirst();
 
@@ -19,8 +19,8 @@ export default async function SettingsPage() {
       data: {
         ispName: "NETCAFE",
         supportPhone: "+880 9612-000111",
-        bkashNumber: "01799887766",
-        bkashQrCode: "",
+        bkashNumber: "01622280960",
+        bkashQrCode: "/images/bkash-qr.png",
         paymentInstructions: "1. Open your bKash App\n2. Select 'Send Money'\n3. Enter ISP bKash Number\n4. Enter exact bill amount\n5. Submit Transaction ID in portal",
       },
     });
@@ -38,24 +38,24 @@ export default async function SettingsPage() {
           ispName: settings.ispName,
           supportPhone: settings.supportPhone,
           bkashNumber: settings.bkashNumber,
-          bkashQrCode: settings.bkashQrCode || "",
+          bkashQrCode: settings.bkashQrCode || "/images/bkash-qr.png",
           paymentInstructions: settings.paymentInstructions || "",
         }}
       />
 
-      {/* Admin Security & Password Change Card */}
+      {/* Admin Security & Account Change Card */}
       <Card>
         <CardHeader>
           <CardTitle className="text-base flex items-center gap-2">
             <Lock className="h-5 w-5 text-blue-600" />
-            Admin Security & Password
+            Admin Account & Security Settings
           </CardTitle>
           <CardDescription>
-            Change your administrator login password to protect access to billing and customer records.
+            Change your administrator login email address and password to keep your ISP billing system secure.
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <AdminPasswordForm />
+          <AdminPasswordForm initialEmail={session.email} />
         </CardContent>
       </Card>
     </div>
