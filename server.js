@@ -3,22 +3,52 @@
 
 const path = require("path");
 const fs = require("fs");
-const { execSync } = require("child_process");
 
 process.env.NODE_ENV = process.env.NODE_ENV || "production";
 process.env.PORT = process.env.PORT || "3000";
 process.env.HOSTNAME = process.env.HOSTNAME || "0.0.0.0";
 
-// Attempt automatic database migration and seeding on first startup (No-terminal required)
-try {
-  if (process.env.DATABASE_URL) {
-    console.log("[Setup] Checking database migrations...");
-    execSync("npx prisma migrate deploy", { stdio: "inherit" });
-    console.log("[Setup] Prisma migrations successfully applied.");
+// --- Automatic Database Health Check on Startup ---
+async function checkDatabaseOnStartup() {
+  const statusFile = path.join(__dirname, "db-status.txt");
+  const dbUrl = process.env.DATABASE_URL || "NOT_SET";
+  const maskedUrl = dbUrl.replace(/:([^:@]+)@/, ":****@");
+
+  try {
+    const { PrismaClient } = require("@prisma/client");
+    const testPrisma = new PrismaClient();
+    const result = await testPrisma.$queryRaw`SELECT NOW() as current_time, current_database() as db_name, current_user as db_user;`;
+    const userCount = await testPrisma.user.count();
+    await testPrisma.$disconnect();
+
+    const msg = [
+      `=== DATABASE CONNECTION: SUCCESSFUL ===`,
+      `Time: ${new Date().toISOString()}`,
+      `Database URL: ${maskedUrl}`,
+      `Connected Database: ${result[0]?.db_name}`,
+      `Connected User: ${result[0]?.db_user}`,
+      `Users in Database: ${userCount}`,
+      `Status: Database is online and ready!`,
+    ].join("\n");
+
+    fs.writeFileSync(statusFile, msg, "utf8");
+    console.log(msg);
+  } catch (err) {
+    const errMsg = [
+      `=== DATABASE CONNECTION: FAILED ===`,
+      `Time: ${new Date().toISOString()}`,
+      `Database URL: ${maskedUrl}`,
+      `Error Code: ${err.code || "UNKNOWN"}`,
+      `Error Message: ${err.message}`,
+      `Troubleshooting: Check if host should be 127.0.0.200 or localhost, and verify DB password.`,
+    ].join("\n");
+
+    fs.writeFileSync(statusFile, errMsg, "utf8");
+    console.error(errMsg);
   }
-} catch (migErr) {
-  console.warn("[Setup] Automatic migration notice:", migErr.message);
 }
+
+checkDatabaseOnStartup().catch(() => {});
 
 const standaloneServer = path.join(__dirname, ".next", "standalone", "server.js");
 
