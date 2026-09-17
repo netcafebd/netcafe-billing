@@ -48,8 +48,31 @@ if (fs.existsSync(standaloneDir)) {
     console.log("✔ Copied prisma/ -> .next/standalone/prisma");
   }
 
+  // 4. Copy Prisma client engines (including Linux binaries: debian-openssl-3.0.x, rhel-openssl-3.0.x)
+  const engineFiles = [
+    "libquery_engine-debian-openssl-3.0.x.so.node",
+    "libquery_engine-rhel-openssl-3.0.x.so.node",
+  ];
+  const engineSourceDir = path.join(rootDir, "node_modules", "prisma");
+
+  const targetDirs = [
+    path.join(standaloneDir, "node_modules", ".prisma", "client"),
+    path.join(standaloneDir, "node_modules", "@prisma", "client"),
+    path.join(standaloneDir, "prisma"),
+  ];
+
+  for (const tDir of targetDirs) {
+    fs.mkdirSync(tDir, { recursive: true });
+    for (const eFile of engineFiles) {
+      const srcFile = path.join(engineSourceDir, eFile);
+      if (fs.existsSync(srcFile)) {
+        fs.copyFileSync(srcFile, path.join(tDir, eFile));
+        console.log(`✔ Copied ${eFile} -> ${path.relative(rootDir, tDir)}`);
+      }
+    }
+  }
+
   console.log("✔ Standalone bundle is ready for cPanel Passenger deployment!");
 } else {
   console.log("ℹ Standalone directory not found (skipping postbuild copy).");
 }
-
