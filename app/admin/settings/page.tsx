@@ -14,7 +14,7 @@ export default async function SettingsPage() {
   if (!settings) {
     settings = await prisma.iSPSettings.create({
       data: {
-        ispName: "BengalNet Broadband & Fiber",
+        ispName: "NETCAFE",
         supportPhone: "+880 9612-000111",
         bkashNumber: "01799887766",
         bkashQrCode: "",

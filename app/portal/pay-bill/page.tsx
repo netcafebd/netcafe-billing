@@ -47,7 +47,7 @@ export default async function PayBillPage({ searchParams }: Props) {
   }
 
   const defaultSettings = settings || {
-    ispName: "BengalNet Broadband & Fiber",
+    ispName: "NETCAFE",
     bkashNumber: "01799887766",
     bkashQrCode: "",
     paymentInstructions:

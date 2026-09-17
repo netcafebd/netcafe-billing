@@ -39,7 +39,7 @@ export function CustomerSidebar() {
             <Wifi className="h-5 w-5" />
           </div>
           <div>
-            <span className="font-bold text-slate-900 text-sm block leading-tight">BengalNet</span>
+            <span className="font-bold text-slate-900 text-sm block leading-tight">NETCAFE</span>
             <span className="text-[11px] text-blue-600 font-medium">Customer Portal</span>
           </div>
         </div>
@@ -75,7 +75,7 @@ export function CustomerSidebar() {
             </div>
             <div>
               <span className="block font-bold text-slate-900 text-sm leading-tight">
-                BengalNet ISP
+                NETCAFE
               </span>
               <span className="text-[11px] font-medium text-emerald-600 flex items-center gap-1">
                 <span className="h-1.5 w-1.5 rounded-full bg-emerald-500 animate-pulse" />

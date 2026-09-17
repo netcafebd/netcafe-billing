@@ -41,7 +41,7 @@ async function main() {
 
   await prisma.iSPSettings.create({
     data: {
-      ispName: "BengalNet Broadband & Fiber",
+      ispName: "NETCAFE",
       supportPhone: "+880 9612-000111",
       bkashNumber: "01799887766",
       bkashQrCode: `data:image/svg+xml;utf8,${encodeURIComponent(qrSvg)}`,

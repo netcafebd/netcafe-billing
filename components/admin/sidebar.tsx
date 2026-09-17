@@ -73,7 +73,7 @@ export function AdminSidebar() {
             </div>
             <div>
               <span className="block font-bold text-slate-900 text-sm leading-tight">
-                BengalNet ISP
+                NETCAFE
               </span>
               <span className="text-[11px] font-medium text-blue-600">Admin Control</span>
             </div>

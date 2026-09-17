@@ -67,7 +67,7 @@ CREATE TABLE "payments" (
 
 CREATE TABLE "isp_settings" (
     "id" TEXT NOT NULL,
-    "ispName" TEXT NOT NULL DEFAULT 'BengalNet ISP',
+    "ispName" TEXT NOT NULL DEFAULT 'NETCAFE',
     "supportPhone" TEXT NOT NULL DEFAULT '+880 1700-000000',
     "bkashNumber" TEXT NOT NULL DEFAULT '01700000000',
     "bkashQrCode" TEXT,
@@ -122,7 +122,7 @@ VALUES (
 INSERT INTO "isp_settings" ("id", "ispName", "supportPhone", "bkashNumber", "paymentInstructions", "updatedAt")
 VALUES (
     'default-isp-setting',
-    'BengalNet ISP',
+    'NETCAFE',
     '+880 1700-000000',
     '01799887766',
     '1. bKash App open করুন\n2. Send Money সিলেক্ট করুন\n3. নম্বর দিন: 01799887766\n4. বিলের টাকা সেন্ড করুন\n5. Transaction ID টি কপি করে পোর্টালে সাবমিট করুন।',
