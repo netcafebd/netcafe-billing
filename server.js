@@ -7,6 +7,7 @@ const fs = require("fs");
 process.env.NODE_ENV = process.env.NODE_ENV || "production";
 process.env.PORT = process.env.PORT || "3000";
 process.env.HOSTNAME = process.env.HOSTNAME || "0.0.0.0";
+process.env.UV_THREADPOOL_SIZE = "1"; // Minimize thread spawning on CloudLinux shared hosting
 
 const standaloneServer = path.join(__dirname, ".next", "standalone", "server.js");
 
