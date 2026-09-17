@@ -30,53 +30,74 @@ export default async function AdminDashboardPage() {
   const currentMonth = now.getMonth() + 1;
   const currentYear = now.getFullYear();
 
-  // Aggregate statistics safely in database
-  const [
-    totalCustomers,
-    activeCustomers,
-    inactiveCustomers,
-    totalBills,
-    paidBillsCount,
-    unpaidBillsCount,
-    pendingPaymentsCount,
-    monthPaidPayments,
-    recentPendingPayments,
-  ] = await Promise.all([
-    prisma.customer.count(),
-    prisma.customer.count({ where: { status: CustomerStatus.ACTIVE } }),
-    prisma.customer.count({
-      where: { status: { in: [CustomerStatus.INACTIVE, CustomerStatus.SUSPENDED] } },
-    }),
-    prisma.bill.count(),
-    prisma.bill.count({ where: { status: BillStatus.PAID } }),
-    prisma.bill.count({
-      where: { status: { in: [BillStatus.UNPAID, BillStatus.OVERDUE, BillStatus.PAYMENT_SUBMITTED] } },
-    }),
-    prisma.payment.count({ where: { status: PaymentStatus.PENDING } }),
-    prisma.payment.aggregate({
-      where: {
-        status: PaymentStatus.VERIFIED,
-        bill: {
-          billingMonth: currentMonth,
-          billingYear: currentYear,
-        },
-      },
-      _sum: { amount: true },
-    }),
-    prisma.payment.findMany({
-      where: { status: PaymentStatus.PENDING },
-      include: {
-        customer: true,
-        bill: true,
-      },
-      orderBy: { submittedAt: "desc" },
-      take: 5,
-    }),
-  ]);
+  let totalCustomers = 0;
+  let activeCustomers = 0;
+  let inactiveCustomers = 0;
+  let totalBills = 0;
+  let paidBillsCount = 0;
+  let unpaidBillsCount = 0;
+  let pendingPaymentsCount = 0;
+  let thisMonthCollection = 0;
+  let recentPendingPayments: any[] = [];
+  let dashboardError: string | null = null;
 
-  const thisMonthCollection = monthPaidPayments._sum.amount
-    ? Number(monthPaidPayments._sum.amount)
-    : 0;
+  try {
+    const [
+      tc,
+      ac,
+      ic,
+      tb,
+      pbc,
+      ubc,
+      ppc,
+      mpp,
+      rpp,
+    ] = await Promise.all([
+      prisma.customer.count(),
+      prisma.customer.count({ where: { status: CustomerStatus.ACTIVE } }),
+      prisma.customer.count({
+        where: { status: { in: [CustomerStatus.INACTIVE, CustomerStatus.SUSPENDED] } },
+      }),
+      prisma.bill.count(),
+      prisma.bill.count({ where: { status: BillStatus.PAID } }),
+      prisma.bill.count({
+        where: { status: { in: [BillStatus.UNPAID, BillStatus.OVERDUE, BillStatus.PAYMENT_SUBMITTED] } },
+      }),
+      prisma.payment.count({ where: { status: PaymentStatus.PENDING } }),
+      prisma.payment.aggregate({
+        where: {
+          status: PaymentStatus.VERIFIED,
+          bill: {
+            billingMonth: currentMonth,
+            billingYear: currentYear,
+          },
+        },
+        _sum: { amount: true },
+      }),
+      prisma.payment.findMany({
+        where: { status: PaymentStatus.PENDING },
+        include: {
+          customer: true,
+          bill: true,
+        },
+        orderBy: { submittedAt: "desc" },
+        take: 5,
+      }),
+    ]);
+
+    totalCustomers = tc;
+    activeCustomers = ac;
+    inactiveCustomers = ic;
+    totalBills = tb;
+    paidBillsCount = pbc;
+    unpaidBillsCount = ubc;
+    pendingPaymentsCount = ppc;
+    thisMonthCollection = mpp._sum.amount ? Number(mpp._sum.amount) : 0;
+    recentPendingPayments = rpp;
+  } catch (err: any) {
+    console.error("Dashboard query error:", err);
+    dashboardError = err?.message || String(err);
+  }
 
   const statCards = [
     {
@@ -133,6 +154,18 @@ export default async function AdminDashboardPage() {
           </Button>
         </Link>
       </AdminHeader>
+
+      {dashboardError && (
+        <div className="rounded-xl border border-amber-200 bg-amber-50 p-4 text-amber-900 shadow-xs">
+          <p className="font-bold text-sm flex items-center gap-2">
+            <AlertCircle className="h-4 w-4 text-amber-600" />
+            Database Sync Notice
+          </p>
+          <p className="font-mono text-xs mt-1 bg-white/70 p-2 rounded border border-amber-200/50 break-all">
+            {dashboardError}
+          </p>
+        </div>
+      )}
 
       {/* Metric Cards Grid */}
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">

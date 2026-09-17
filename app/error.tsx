@@ -27,6 +27,11 @@ export default function ErrorPage({
           <p className="text-sm text-slate-500 mt-2">
             An unexpected error occurred while processing your request. Please try again or contact ISP support if the issue persists.
           </p>
+          {error.digest && (
+            <p className="text-xs font-mono text-slate-400 bg-slate-100 p-2 rounded mt-3 break-all">
+              Digest: {error.digest}
+            </p>
+          )}
         </div>
         <div className="flex items-center justify-center gap-3">
           <Button variant="primary" size="md" onClick={() => reset()}>
