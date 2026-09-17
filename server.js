@@ -8,6 +8,8 @@ process.env.NODE_ENV = process.env.NODE_ENV || "production";
 process.env.PORT = process.env.PORT || "3000";
 process.env.HOSTNAME = process.env.HOSTNAME || "0.0.0.0";
 process.env.UV_THREADPOOL_SIZE = "1"; // Minimize thread spawning on CloudLinux shared hosting
+process.env.TOKIO_WORKER_THREADS = "1"; // Minimize Rust Prisma Query Engine Tokio threads (prevents 42-thread explosion)
+process.env.RAYON_NUM_THREADS = "1";
 
 const standaloneServer = path.join(__dirname, ".next", "standalone", "server.js");
 
