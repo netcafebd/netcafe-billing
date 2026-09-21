@@ -176,7 +176,9 @@ export function SettingsForm({ initialSettings }: SettingsFormProps) {
               <span className="text-xs font-medium text-slate-500 mb-2">Scan with bKash App</span>
               {(() => {
                 const qrSrc =
-                  form.bkashQrCode && form.bkashQrCode.trim() !== ""
+                  form.bkashQrCode &&
+                  form.bkashQrCode.trim() !== "" &&
+                  form.bkashQrCode !== "/images/bkash-qr.png"
                     ? form.bkashQrCode
                     : DEFAULT_BKASH_QR_IMAGE;
 

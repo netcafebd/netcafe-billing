@@ -210,7 +210,9 @@ export function PayBillForm({
               </span>
               {(() => {
                 const qrSrc =
-                  ispSettings.bkashQrCode && ispSettings.bkashQrCode.trim() !== ""
+                  ispSettings.bkashQrCode &&
+                  ispSettings.bkashQrCode.trim() !== "" &&
+                  ispSettings.bkashQrCode !== "/images/bkash-qr.png"
                     ? ispSettings.bkashQrCode
                     : DEFAULT_BKASH_QR_IMAGE;
 

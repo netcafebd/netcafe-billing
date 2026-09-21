@@ -38,7 +38,7 @@ export default async function SettingsPage() {
           ispName: settings.ispName,
           supportPhone: settings.supportPhone,
           bkashNumber: settings.bkashNumber,
-          bkashQrCode: settings.bkashQrCode || "/images/bkash-qr.png",
+          bkashQrCode: settings.bkashQrCode === "/images/bkash-qr.png" ? "" : (settings.bkashQrCode || ""),
           paymentInstructions: settings.paymentInstructions || "",
         }}
       />
