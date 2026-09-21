@@ -42,7 +42,7 @@ export function ContactSection({ hotline, supportPhone, email, officeAddress, wh
       if (res.success) {
         setSubmitted(true);
 
-        // Build WhatsApp Alert URL
+        // Build WhatsApp Alert URL with full emojis
         const messageText = `📩 *NETCAFE ওয়েবসাইট নতুন মেসেজ / সাপোর্ট টিকিট* 📩
 ----------------------------------------
 👤 *প্রেরকের নাম:* ${name}
@@ -147,7 +147,7 @@ export function ContactSection({ hotline, supportPhone, email, officeAddress, wh
                     className="w-full py-3.5 px-4 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs sm:text-sm transition flex items-center justify-center gap-2 shadow-lg shadow-emerald-600/20"
                   >
                     <MessageCircle className="w-4 h-4 fill-current" />
-                    <span>WhatsApp এ সরাসরি নোটিফিকেশন চালু করুন</span>
+                    <span>WhatsApp এ সরাসরি নোটিফিকেশন চালু করুন 💬</span>
                   </a>
                 )}
               </div>

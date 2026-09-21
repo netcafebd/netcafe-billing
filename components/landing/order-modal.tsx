@@ -68,7 +68,7 @@ export function OrderModal({ isOpen, onClose, initialPackage, initialArea, hotli
         setRefId(trackingCode);
         setSubmitted(true);
 
-        // Format WhatsApp Message
+        // Format WhatsApp Message with full emojis
         const messageText = `🌐 *নতুন ফাইবার ব্রডব্যান্ড সংযোগ আবেদন* 🌐
 ----------------------------------------
 🆔 *রেফারেন্স কোড:* ${trackingCode}
@@ -144,7 +144,7 @@ export function OrderModal({ isOpen, onClose, initialPackage, initialArea, hotli
                 className="w-full py-3.5 px-4 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs sm:text-sm transition flex items-center justify-center gap-2 shadow-lg shadow-emerald-600/20"
               >
                 <MessageCircle className="w-4 h-4 fill-current" />
-                <span>WhatsApp এ মেসেজ নোটিফিকেশন খুলুন</span>
+                <span>WhatsApp এ মেসেজ নোটিফিকেশন খুলুন 💬</span>
               </a>
             )}
 

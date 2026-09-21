@@ -29,6 +29,23 @@ interface HeroProps {
 export function Hero({ onOpenOrder, heroNotice, heroTitle, heroSubtitle, ispName }: HeroProps) {
   const { t } = useLanguage();
 
+  const defaultTitle = t({ bn: "দ্রুততম গতিতে সংযোগ,", en: "Ultra-Fast Connectivity," });
+  const defaultHighlight = t({ bn: "নিরবচ্ছিন্ন ডিজিটাল জীবন", en: "Uninterrupted Digital Life" });
+
+  let mainTitle = defaultTitle;
+  let highlightTitle = defaultHighlight;
+
+  if (heroTitle) {
+    if (heroTitle.includes(",")) {
+      const parts = heroTitle.split(",");
+      mainTitle = parts[0] + ",";
+      highlightTitle = parts.slice(1).join(",");
+    } else {
+      mainTitle = heroTitle;
+      highlightTitle = "";
+    }
+  }
+
   return (
     <section id="hero" className="relative overflow-hidden pt-8 pb-16 md:pt-12 md:pb-24 bg-[#080d1a]">
       {/* Glow Effects */}
@@ -52,10 +69,12 @@ export function Hero({ onOpenOrder, heroNotice, heroTitle, heroSubtitle, ispName
             </div>
 
             <h1 className="text-4xl sm:text-5xl lg:text-6xl font-black tracking-tight text-white leading-[1.15]">
-              {heroTitle || t({ bn: "দ্রুততম গতিতে সংযোগ,", en: "Ultra-Fast Connectivity," })}{" "}
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-orange-400 via-amber-300 to-indigo-400">
-                {t({ bn: "নিরবচ্ছিন্ন ডিজিটাল জীবন", en: "Uninterrupted Digital Life" })}
-              </span>
+              {mainTitle}{" "}
+              {highlightTitle && (
+                <span className="text-transparent bg-clip-text bg-gradient-to-r from-orange-400 via-amber-300 to-indigo-400">
+                  {highlightTitle}
+                </span>
+              )}
             </h1>
 
             <p className="text-base sm:text-lg text-slate-300 max-w-2xl mx-auto lg:mx-0 leading-relaxed">
