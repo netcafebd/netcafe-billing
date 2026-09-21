@@ -14,7 +14,19 @@ export async function updateISPSettingsAction(data: any) {
     return { success: false, message: parsed.error.issues[0]?.message || "Validation failed" };
   }
 
-  const { ispName, supportPhone, bkashNumber, bkashQrCode, paymentInstructions } = parsed.data;
+  const {
+    ispName,
+    supportPhone,
+    hotline,
+    bkashNumber,
+    bkashQrCode,
+    paymentInstructions,
+    heroTitle,
+    heroSubtitle,
+    heroNotice,
+    coverageArea,
+    packagesJson,
+  } = parsed.data;
 
   try {
     const existing = await prisma.iSPSettings.findFirst();
@@ -26,9 +38,15 @@ export async function updateISPSettingsAction(data: any) {
         data: {
           ispName,
           supportPhone,
+          hotline,
           bkashNumber,
           bkashQrCode,
           paymentInstructions,
+          heroTitle,
+          heroSubtitle,
+          heroNotice,
+          coverageArea,
+          packagesJson,
         },
       });
     } else {
@@ -36,9 +54,15 @@ export async function updateISPSettingsAction(data: any) {
         data: {
           ispName,
           supportPhone,
+          hotline,
           bkashNumber,
           bkashQrCode,
           paymentInstructions,
+          heroTitle,
+          heroSubtitle,
+          heroNotice,
+          coverageArea,
+          packagesJson,
         },
       });
     }
@@ -48,12 +72,13 @@ export async function updateISPSettingsAction(data: any) {
       action: "SETTINGS_UPDATED",
       entityType: "ISPSettings",
       entityId: updated.id,
-      metadata: { ispName, supportPhone, bkashNumber },
+      metadata: { ispName, supportPhone, bkashNumber, hotline },
     });
 
+    revalidatePath("/");
     revalidatePath("/admin/settings");
     revalidatePath("/portal/pay-bill");
-    return { success: true, message: "ISP settings updated successfully!" };
+    return { success: true, message: "ISP & website settings updated successfully!" };
   } catch (err: any) {
     console.error("Update settings error:", err);
     return { success: false, message: "Failed to update ISP settings." };

@@ -13,9 +13,15 @@ interface SettingsFormProps {
   initialSettings: {
     ispName: string;
     supportPhone: string;
+    hotline: string;
     bkashNumber: string;
     bkashQrCode: string;
     paymentInstructions: string;
+    heroTitle: string;
+    heroSubtitle: string;
+    heroNotice: string;
+    coverageArea: string;
+    packagesJson: string;
   };
 }
 
@@ -40,7 +46,7 @@ export function SettingsForm({ initialSettings }: SettingsFormProps) {
         return;
       }
 
-      setStatusMessage({ type: "success", text: "ISP settings saved successfully!" });
+      setStatusMessage({ type: "success", text: "ISP & website settings saved successfully!" });
     } catch (err) {
       setStatusMessage({ type: "error", text: "An unexpected error occurred." });
     } finally {
@@ -60,12 +66,20 @@ export function SettingsForm({ initialSettings }: SettingsFormProps) {
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSubmit} className="space-y-4">
-            <Input
-              label="ISP Brand Name"
-              value={form.ispName}
-              onChange={(e) => setForm({ ...form, ispName: e.target.value })}
-              required
-            />
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <Input
+                label="ISP Brand Name"
+                value={form.ispName}
+                onChange={(e) => setForm({ ...form, ispName: e.target.value })}
+                required
+              />
+              <Input
+                label="Hotline Number (Top Bar)"
+                value={form.hotline}
+                onChange={(e) => setForm({ ...form, hotline: e.target.value })}
+                helperText="e.g. 16234"
+              />
+            </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <Input
@@ -88,7 +102,7 @@ export function SettingsForm({ initialSettings }: SettingsFormProps) {
               value={form.bkashQrCode}
               onChange={(e) => setForm({ ...form, bkashQrCode: e.target.value })}
               helperText="Paste SVG markup or data:image URL to display bKash QR code."
-              rows={4}
+              rows={3}
             />
 
             <Textarea
@@ -96,9 +110,52 @@ export function SettingsForm({ initialSettings }: SettingsFormProps) {
               value={form.paymentInstructions}
               onChange={(e) => setForm({ ...form, paymentInstructions: e.target.value })}
               helperText="Step-by-step guidance shown on the customer's Pay Bill page."
-              rows={5}
+              rows={4}
               required
             />
+
+            <div className="pt-4 border-t border-slate-200">
+              <h4 className="text-xs font-bold text-slate-800 uppercase tracking-wider mb-3">
+                🌐 Main Website Landing Page Content (netcafe-bd.com)
+              </h4>
+
+              <div className="space-y-3">
+                <Input
+                  label="Hero Notice Banner (Offer Notice)"
+                  value={form.heroNotice}
+                  onChange={(e) => setForm({ ...form, heroNotice: e.target.value })}
+                  helperText="Top announcement text"
+                />
+
+                <Input
+                  label="Hero Headline Title"
+                  value={form.heroTitle}
+                  onChange={(e) => setForm({ ...form, heroTitle: e.target.value })}
+                  helperText="Main title shown on home page hero banner"
+                />
+
+                <Textarea
+                  label="Hero Description / Subtitle"
+                  value={form.heroSubtitle}
+                  onChange={(e) => setForm({ ...form, heroSubtitle: e.target.value })}
+                  rows={2}
+                />
+
+                <Input
+                  label="Coverage Area Text"
+                  value={form.coverageArea}
+                  onChange={(e) => setForm({ ...form, coverageArea: e.target.value })}
+                />
+
+                <Textarea
+                  label="Package Pricing Configuration (JSON)"
+                  value={form.packagesJson}
+                  onChange={(e) => setForm({ ...form, packagesJson: e.target.value })}
+                  helperText="JSON array for ISP package names, speeds, and monthly prices."
+                  rows={4}
+                />
+              </div>
+            </div>
 
             {statusMessage && (
               <div

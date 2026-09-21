@@ -1,12 +1,13 @@
 "use client";
 
 import React, { useState } from "react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { loginAction } from "@/app/actions/auth.actions";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Alert } from "@/components/shared/alert";
-import { Wifi, ArrowRight } from "lucide-react";
+import { Wifi, ArrowRight, ArrowLeft } from "lucide-react";
 
 export default function LoginPage() {
   const router = useRouter();
@@ -39,6 +40,17 @@ export default function LoginPage() {
   return (
     <div className="min-h-screen flex items-center justify-center bg-radial from-slate-100 to-slate-200 p-4 sm:p-6">
       <div className="w-full max-w-md">
+        {/* Back to Home Link */}
+        <div className="mb-4 text-center">
+          <Link
+            href="/"
+            className="inline-flex items-center gap-1.5 text-xs font-semibold text-slate-600 hover:text-blue-600 bg-white/80 hover:bg-white px-3 py-1.5 rounded-full border border-slate-200 shadow-xs transition"
+          >
+            <ArrowLeft className="h-3.5 w-3.5" />
+            ← ব্যাক টু মেইন ওয়েবসাইট
+          </Link>
+        </div>
+
         {/* Logo and Brand */}
         <div className="text-center mb-8">
           <div className="inline-flex h-14 w-14 items-center justify-center rounded-2xl bg-blue-600 text-white shadow-lg shadow-blue-500/30 mb-4">

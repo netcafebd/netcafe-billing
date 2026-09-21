@@ -38,9 +38,15 @@ export default async function SettingsPage() {
         initialSettings={{
           ispName: settings.ispName,
           supportPhone: settings.supportPhone,
+          hotline: settings.hotline || "16234",
           bkashNumber: settings.bkashNumber,
           bkashQrCode: isDefaultOrMockQr(settings.bkashQrCode) ? "" : (settings.bkashQrCode || ""),
           paymentInstructions: settings.paymentInstructions || "",
+          heroTitle: settings.heroTitle || "দ্রুততম গতিতে সংযোগ, নিরবচ্ছিন্ন ডিজিটাল জীবন",
+          heroSubtitle: settings.heroSubtitle || "NETCAFE ফাইবার ব্রডব্যান্ড নিয়ে এলো বাফারলেস ৪K ভিডিও স্ট্রিমিং, ১০০+ এমবিপিএস BDIX স্পিড, সুপার লো-পিং গেমিং এবং সার্বক্ষণিক ২৪/৭ টেকনিক্যাল সাপোর্ট।",
+          heroNotice: settings.heroNotice || "নতুন গ্রাহকদের জন্য ফ্রি ফাইবার ইনস্টলেশন অফার!",
+          coverageArea: settings.coverageArea || "ঢাকা, সাভার, গাজীপুর, চট্টগ্রাম এবং সারা দেশজুড়ে বিস্তৃত নেটওয়ার্ক",
+          packagesJson: settings.packagesJson || "[{\"name\":\"Regular Speed\",\"speed\":\"15 Mbps\",\"price\":500,\"bdix\":\"100 Mbps\"},{\"name\":\"Gaming Turbo\",\"speed\":\"25 Mbps\",\"price\":800,\"bdix\":\"100 Mbps\"},{\"name\":\"Super Speed\",\"speed\":\"40 Mbps\",\"price\":1200,\"bdix\":\"100 Mbps\"},{\"name\":\"Corporate Pro\",\"speed\":\"60 Mbps\",\"price\":1800,\"bdix\":\"100 Mbps\"}]",
         }}
       />
 

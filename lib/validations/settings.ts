@@ -6,12 +6,18 @@ export const settingsUpdateSchema = z.object({
     .string()
     .min(5, "Support Phone is required")
     .trim(),
+  hotline: z.string().optional().default("16234"),
   bkashNumber: z
     .string()
     .min(11, "bKash Number must be at least 11 digits")
     .regex(/^01[3-9]\d{8}$/, "Must be a valid Bangladeshi bKash number (01XXXXXXXXX)"),
   bkashQrCode: z.string().optional().default(""),
   paymentInstructions: z.string().min(10, "Payment instructions are required"),
+  heroTitle: z.string().optional().default(""),
+  heroSubtitle: z.string().optional().default(""),
+  heroNotice: z.string().optional().default(""),
+  coverageArea: z.string().optional().default(""),
+  packagesJson: z.string().optional().default(""),
 });
 
 export type SettingsUpdateInput = z.infer<typeof settingsUpdateSchema>;

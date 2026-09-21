@@ -77,7 +77,7 @@ export default async function PayBillPage({ searchParams }: Props) {
             ispName: defaultSettings.ispName,
             bkashNumber: defaultSettings.bkashNumber,
             bkashQrCode: defaultSettings.bkashQrCode || DEFAULT_BKASH_QR_IMAGE,
-            paymentInstructions: defaultSettings.paymentInstructions,
+            paymentInstructions: defaultSettings.paymentInstructions || "",
           }}
           customerPhone={customer?.phone || ""}
         />
