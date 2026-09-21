@@ -2,23 +2,75 @@
 
 import React, { useState } from "react";
 import { useLanguage } from "./language-context";
-import { MapPin, PhoneCall, Mail, Send, CheckCircle2, Headphones, HelpCircle } from "lucide-react";
+import { submitContactMessageAction } from "@/app/actions/inquiries.actions";
+import { MapPin, PhoneCall, Mail, Send, CheckCircle2, Headphones, AlertCircle, Loader2, MessageCircle } from "lucide-react";
 
 interface ContactSectionProps {
   hotline?: string;
   supportPhone?: string;
   email?: string;
   officeAddress?: string;
+  whatsappNumber?: string;
 }
 
-export function ContactSection({ hotline, supportPhone, email, officeAddress }: ContactSectionProps) {
+export function ContactSection({ hotline, supportPhone, email, officeAddress, whatsappNumber }: ContactSectionProps) {
   const { t } = useLanguage();
+  const [name, setName] = useState("");
+  const [phone, setPhone] = useState("");
+  const [subject, setSubject] = useState("সাধারণ জিজ্ঞাসা");
+  const [message, setMessage] = useState("");
+  const [submitting, setSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
+  const [errorMsg, setErrorMsg] = useState("");
+  const [waLink, setWaLink] = useState("");
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setSubmitted(true);
-    setTimeout(() => setSubmitted(false), 5000);
+    if (!name || !phone || !message) return;
+
+    setSubmitting(true);
+    setErrorMsg("");
+
+    try {
+      const res = await submitContactMessageAction({
+        name,
+        phone,
+        subject,
+        message,
+      });
+
+      if (res.success) {
+        setSubmitted(true);
+
+        // Build WhatsApp Alert URL
+        const messageText = `📩 *NETCAFE ওয়েবসাইট নতুন মেসেজ / সাপোর্ট টিকিট* 📩
+----------------------------------------
+👤 *প্রেরকের নাম:* ${name}
+📞 *মোবাইল নম্বর:* ${phone}
+📌 *বিষয়:* ${subject}
+💬 *মেসেজ:* ${message}
+----------------------------------------
+*NETCAFE Helpdesk System*`;
+
+        const targetWaNumber = (whatsappNumber || "8801622280960").replace(/[^0-9]/g, "");
+        const waUrl = `https://wa.me/${targetWaNumber}?text=${encodeURIComponent(messageText)}`;
+        setWaLink(waUrl);
+
+        try {
+          window.open(waUrl, "_blank");
+        } catch (_) {}
+
+        setName("");
+        setPhone("");
+        setMessage("");
+      } else {
+        setErrorMsg(res.message || "মেসেজ পাঠানো সম্ভব হয়নি। আবার চেষ্টা করুন।");
+      }
+    } catch (err: any) {
+      setErrorMsg("Error submitting message.");
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   return (
@@ -77,16 +129,37 @@ export function ContactSection({ hotline, supportPhone, email, officeAddress }: 
           <div className="p-8 rounded-3xl bg-slate-900/90 border border-slate-800 space-y-4 shadow-2xl">
             <h3 className="text-xl font-bold text-white">{t({ bn: "অনলাইন হেল্পডেস্ক বা বার্তা পাঠান", en: "Send A Message / Helpdesk Ticket" })}</h3>
             <p className="text-xs text-slate-400">
-              {t({ bn: "আপনার তথ্য দিন, আমাদের প্রতিনিধি দ্রুততম সময়ে যোগাযোগ করবেন।", en: "Fill out your details and our team will get back to you shortly." })}
+              {t({ bn: "আপনার তথ্য দিন, আমাদের প্রতিনিধি ডাটাবেজ ও WhatsApp এ নোটিফিকেশন পেয়ে দ্রুত যোগাযোগ করবেন।", en: "Fill out your details and our team will get back to you shortly." })}
             </p>
 
             {submitted ? (
-              <div className="p-4 rounded-xl bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 text-xs font-semibold flex items-center gap-2">
-                <CheckCircle2 className="w-5 h-5 shrink-0" />
-                <span>{t({ bn: "আপনার বার্তা সফলভাবে পাঠানো হয়েছে! আমাদের কাস্টমার কেয়ার টিম দ্রুত যোগাযোগ করবে।", en: "Message sent successfully! Our customer care team will reach out soon." })}</span>
+              <div className="space-y-3">
+                <div className="p-4 rounded-xl bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 text-xs font-semibold flex items-center gap-2">
+                  <CheckCircle2 className="w-5 h-5 shrink-0" />
+                  <span>{t({ bn: "আপনার বার্তা সফলভাবে জমা হয়েছে এবং WhatsApp এ নোটিফিকেশন পাঠানো হয়েছে!", en: "Message saved & sent to WhatsApp successfully!" })}</span>
+                </div>
+
+                {waLink && (
+                  <a
+                    href={waLink}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="w-full py-3.5 px-4 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs sm:text-sm transition flex items-center justify-center gap-2 shadow-lg shadow-emerald-600/20"
+                  >
+                    <MessageCircle className="w-4 h-4 fill-current" />
+                    <span>WhatsApp এ সরাসরি নোটিফিকেশন চালু করুন</span>
+                  </a>
+                )}
               </div>
             ) : (
               <form onSubmit={handleSubmit} className="space-y-4">
+                {errorMsg && (
+                  <div className="p-3 rounded-xl bg-rose-500/10 border border-rose-500/20 text-rose-300 text-xs flex items-center gap-2">
+                    <AlertCircle className="w-4 h-4 text-rose-400 shrink-0" />
+                    <span>{errorMsg}</span>
+                  </div>
+                )}
+
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                   <div>
                     <label className="block text-[11px] font-semibold text-slate-300 mb-1">
@@ -94,6 +167,8 @@ export function ContactSection({ hotline, supportPhone, email, officeAddress }: 
                     </label>
                     <input
                       type="text"
+                      value={name}
+                      onChange={(e) => setName(e.target.value)}
                       placeholder="e.g. আবরার রহমান"
                       className="w-full px-4 py-2.5 rounded-xl bg-slate-950 border border-slate-800 text-white placeholder-slate-500 text-xs focus:outline-none focus:border-indigo-500"
                       required
@@ -106,6 +181,8 @@ export function ContactSection({ hotline, supportPhone, email, officeAddress }: 
                     </label>
                     <input
                       type="tel"
+                      value={phone}
+                      onChange={(e) => setPhone(e.target.value)}
                       placeholder="01XXXXXXXXX"
                       className="w-full px-4 py-2.5 rounded-xl bg-slate-950 border border-slate-800 text-white placeholder-slate-500 text-xs focus:outline-none focus:border-indigo-500"
                       required
@@ -117,11 +194,15 @@ export function ContactSection({ hotline, supportPhone, email, officeAddress }: 
                   <label className="block text-[11px] font-semibold text-slate-300 mb-1">
                     {t({ bn: "বিষয়ের ধরন", en: "Subject Type" })}
                   </label>
-                  <select className="w-full px-4 py-2.5 rounded-xl bg-slate-950 border border-slate-800 text-white text-xs focus:outline-none focus:border-indigo-500">
-                    <option>{t({ bn: "সাধারণ জিজ্ঞাসা", en: "General Query" })}</option>
-                    <option>{t({ bn: "নতুন সংযোগ আবেদন", en: "New Connection Request" })}</option>
-                    <option>{t({ bn: "বিলিং ও পেমেন্ট সমস্যা", en: "Billing & Payment Issue" })}</option>
-                    <option>{t({ bn: "টেকনিক্যাল সাপোর্ট ও কমপ্লেন", en: "Technical Support & Complaint" })}</option>
+                  <select
+                    value={subject}
+                    onChange={(e) => setSubject(e.target.value)}
+                    className="w-full px-4 py-2.5 rounded-xl bg-slate-950 border border-slate-800 text-white text-xs focus:outline-none focus:border-indigo-500"
+                  >
+                    <option value="সাধারণ জিজ্ঞাসা">{t({ bn: "সাধারণ জিজ্ঞাসা", en: "General Query" })}</option>
+                    <option value="নতুন সংযোগ আবেদন">{t({ bn: "নতুন সংযোগ আবেদন", en: "New Connection Request" })}</option>
+                    <option value="বিলিং ও পেমেন্ট সমস্যা">{t({ bn: "বিলিং ও পেমেন্ট সমস্যা", en: "Billing & Payment Issue" })}</option>
+                    <option value="টেকনিক্যাল সাপোর্ট ও কমপ্লেন">{t({ bn: "টেকনিক্যাল সাপোর্ট ও কমপ্লেন", en: "Technical Support & Complaint" })}</option>
                   </select>
                 </div>
 
@@ -130,6 +211,8 @@ export function ContactSection({ hotline, supportPhone, email, officeAddress }: 
                     {t({ bn: "আপনার বার্তা / সমস্যা বিস্তারিত লিখুন", en: "Your Message Details" })}
                   </label>
                   <textarea
+                    value={message}
+                    onChange={(e) => setMessage(e.target.value)}
                     placeholder="এখানে বিস্তারিত লিখুন..."
                     rows={4}
                     className="w-full px-4 py-2.5 rounded-xl bg-slate-950 border border-slate-800 text-white placeholder-slate-500 text-xs focus:outline-none focus:border-indigo-500"
@@ -139,10 +222,20 @@ export function ContactSection({ hotline, supportPhone, email, officeAddress }: 
 
                 <button
                   type="submit"
-                  className="w-full py-3.5 rounded-xl bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600 text-white font-bold text-xs transition flex items-center justify-center gap-2 shadow-lg shadow-orange-500/20"
+                  disabled={submitting}
+                  className="w-full py-3.5 rounded-xl bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600 text-white font-bold text-xs transition flex items-center justify-center gap-2 shadow-lg shadow-orange-500/20 disabled:opacity-50"
                 >
-                  <Send className="w-4 h-4" />
-                  <span>{t({ bn: "বার্তা পাঠান", en: "Send Message" })}</span>
+                  {submitting ? (
+                    <>
+                      <Loader2 className="w-4 h-4 animate-spin" />
+                      <span>পাঠানো হচ্ছে...</span>
+                    </>
+                  ) : (
+                    <>
+                      <MessageCircle className="w-4 h-4" />
+                      <span>{t({ bn: "বার্তা পাঠান (WhatsApp নোটিফিকেশন সহ)", en: "Send Message (With WhatsApp Alert)" })}</span>
+                    </>
+                  )}
                 </button>
               </form>
             )}

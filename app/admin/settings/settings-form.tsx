@@ -14,6 +14,7 @@ interface SettingsFormProps {
     ispName: string;
     supportPhone: string;
     hotline: string;
+    whatsappNumber?: string;
     email: string;
     officeAddress: string;
     bkashNumber: string;
@@ -30,7 +31,10 @@ interface SettingsFormProps {
 }
 
 export function SettingsForm({ initialSettings }: SettingsFormProps) {
-  const [form, setForm] = useState(initialSettings);
+  const [form, setForm] = useState({
+    ...initialSettings,
+    whatsappNumber: initialSettings.whatsappNumber || "8801622280960",
+  });
   const [isLoading, setIsLoading] = useState(false);
   const [statusMessage, setStatusMessage] = useState<{
     type: "success" | "error";
@@ -93,19 +97,19 @@ export function SettingsForm({ initialSettings }: SettingsFormProps) {
                 required
               />
               <Input
+                label="WhatsApp Hotline Number"
+                value={form.whatsappNumber}
+                onChange={(e) => setForm({ ...form, whatsappNumber: e.target.value })}
+                helperText="Format: 8801XXXXXXXXX (New orders & messages send WhatsApp alert to this number!)"
+              />
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <Input
                 label="Support Email"
                 value={form.email}
                 onChange={(e) => setForm({ ...form, email: e.target.value })}
               />
-            </div>
-
-            <Input
-              label="Office Address"
-              value={form.officeAddress}
-              onChange={(e) => setForm({ ...form, officeAddress: e.target.value })}
-            />
-
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <Input
                 label="ISP bKash Number (Send Money)"
                 value={form.bkashNumber}
@@ -114,6 +118,12 @@ export function SettingsForm({ initialSettings }: SettingsFormProps) {
                 required
               />
             </div>
+
+            <Input
+              label="Office Address"
+              value={form.officeAddress}
+              onChange={(e) => setForm({ ...form, officeAddress: e.target.value })}
+            />
 
             <Textarea
               label="bKash QR Code (SVG or Data URL)"
@@ -235,7 +245,7 @@ export function SettingsForm({ initialSettings }: SettingsFormProps) {
                 <h4 className="font-bold text-slate-900 text-base">{form.ispName}</h4>
                 <p className="text-xs text-slate-500 flex items-center gap-1 mt-0.5">
                   <Phone className="h-3 w-3 text-slate-400" />
-                  Support: {form.supportPhone}
+                  Support: {form.supportPhone} | WhatsApp: {form.whatsappNumber}
                 </p>
               </div>
               <span className="text-xs font-semibold text-[#e2136e] bg-pink-100 px-2.5 py-1 rounded-full">
@@ -296,4 +306,3 @@ export function SettingsForm({ initialSettings }: SettingsFormProps) {
     </div>
   );
 }
-

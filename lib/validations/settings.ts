@@ -7,6 +7,7 @@ export const settingsUpdateSchema = z.object({
     .min(5, "Support Phone is required")
     .trim(),
   hotline: z.string().optional().default("16234"),
+  whatsappNumber: z.string().optional().default("8801622280960"),
   email: z.string().optional().default("support@netcafe-bd.com"),
   officeAddress: z.string().optional().default(""),
   bkashNumber: z
@@ -25,4 +26,3 @@ export const settingsUpdateSchema = z.object({
 });
 
 export type SettingsUpdateInput = z.infer<typeof settingsUpdateSchema>;
-

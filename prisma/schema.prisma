@@ -116,11 +116,41 @@ model Payment {
   @@map("payments")
 }
 
+model ConnectionRequest {
+  id            String   @id @default(uuid())
+  referenceCode String   @unique
+  name          String
+  phone         String
+  packageName   String?
+  area          String?
+  address       String?
+  status        String   @default("PENDING")
+  notes         String?
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  @@map("connection_requests")
+}
+
+model ContactMessage {
+  id        String   @id @default(uuid())
+  name      String
+  phone     String
+  subject   String?
+  message   String   @db.Text
+  status    String   @default("UNREAD")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("contact_messages")
+}
+
 model ISPSettings {
   id                  String   @id @default(uuid())
   ispName             String   @default("NETCAFE Fiber Broadband")
   supportPhone        String   @default("01700000000")
   hotline             String   @default("16234")
+  whatsappNumber      String?  @default("8801622280960")
   email               String?  @default("support@netcafe-bd.com")
   officeAddress       String?  @default("হাউজ #১২, রোড #০৪, ব্লক #বি, ঢাকা-১২১৬, বাংলাদেশ") @db.Text
   bkashNumber         String   @default("01800000000")
@@ -153,4 +183,3 @@ model AuditLog {
   @@index([entityType])
   @@map("audit_logs")
 }
-

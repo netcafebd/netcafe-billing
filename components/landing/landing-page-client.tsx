@@ -93,6 +93,7 @@ export function LandingPageClient({ settings, session }: LandingPageClientProps)
             supportPhone={settings?.supportPhone}
             email={settings?.email}
             officeAddress={settings?.officeAddress}
+            whatsappNumber={settings?.whatsappNumber}
           />
         </main>
 
@@ -204,6 +205,7 @@ export function LandingPageClient({ settings, session }: LandingPageClientProps)
           initialPackage={selectedPackage}
           initialArea={selectedArea}
           hotline={settings?.hotline || "16234"}
+          whatsappNumber={settings?.whatsappNumber}
         />
       </div>
     </LanguageProvider>

@@ -18,6 +18,7 @@ export async function updateISPSettingsAction(data: any) {
     ispName,
     supportPhone,
     hotline,
+    whatsappNumber,
     email,
     officeAddress,
     bkashNumber,
@@ -43,6 +44,7 @@ export async function updateISPSettingsAction(data: any) {
           ispName,
           supportPhone,
           hotline,
+          whatsappNumber,
           email,
           officeAddress,
           bkashNumber,
@@ -63,6 +65,7 @@ export async function updateISPSettingsAction(data: any) {
           ispName,
           supportPhone,
           hotline,
+          whatsappNumber,
           email,
           officeAddress,
           bkashNumber,
@@ -84,7 +87,7 @@ export async function updateISPSettingsAction(data: any) {
       action: "SETTINGS_UPDATED",
       entityType: "ISPSettings",
       entityId: updated.id,
-      metadata: { ispName, supportPhone, bkashNumber, hotline },
+      metadata: { ispName, supportPhone, bkashNumber, hotline, whatsappNumber },
     });
 
     revalidatePath("/");
@@ -96,4 +99,3 @@ export async function updateISPSettingsAction(data: any) {
     return { success: false, message: "Failed to update ISP settings." };
   }
 }
-

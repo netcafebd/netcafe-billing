@@ -2,7 +2,8 @@
 
 import React, { useState, useEffect } from "react";
 import { useLanguage } from "./language-context";
-import { X, Zap, CheckCircle2, ShieldCheck, PhoneCall, MapPin, User } from "lucide-react";
+import { submitConnectionRequestAction } from "@/app/actions/inquiries.actions";
+import { X, Zap, CheckCircle2, ShieldCheck, PhoneCall, MapPin, User, AlertCircle, MessageCircle } from "lucide-react";
 
 interface OrderModalProps {
   isOpen: boolean;
@@ -10,9 +11,10 @@ interface OrderModalProps {
   initialPackage?: any;
   initialArea?: string;
   hotline?: string;
+  whatsappNumber?: string;
 }
 
-export function OrderModal({ isOpen, onClose, initialPackage, initialArea, hotline }: OrderModalProps) {
+export function OrderModal({ isOpen, onClose, initialPackage, initialArea, hotline, whatsappNumber }: OrderModalProps) {
   const { t } = useLanguage();
   const [formData, setFormData] = useState({
     name: "",
@@ -24,6 +26,8 @@ export function OrderModal({ isOpen, onClose, initialPackage, initialArea, hotli
   const [submitting, setSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
   const [refId, setRefId] = useState("");
+  const [errorMsg, setErrorMsg] = useState("");
+  const [waLink, setWaLink] = useState("");
 
   useEffect(() => {
     if (initialPackage) {
@@ -43,20 +47,60 @@ export function OrderModal({ isOpen, onClose, initialPackage, initialArea, hotli
 
   if (!isOpen) return null;
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!formData.name || !formData.phone) return;
 
     setSubmitting(true);
-    setTimeout(() => {
+    setErrorMsg("");
+
+    try {
+      const res = await submitConnectionRequestAction({
+        name: formData.name,
+        phone: formData.phone,
+        packageName: formData.packageName,
+        area: formData.area,
+        address: formData.address,
+      });
+
+      if (res.success && res.referenceCode) {
+        const trackingCode = res.referenceCode;
+        setRefId(trackingCode);
+        setSubmitted(true);
+
+        // Format WhatsApp Message
+        const messageText = `🌐 *নতুন ফাইবার ব্রডব্যান্ড সংযোগ আবেদন* 🌐
+----------------------------------------
+🆔 *রেফারেন্স কোড:* ${trackingCode}
+👤 *গ্রাহকের নাম:* ${formData.name}
+📞 *মোবাইল নম্বর:* ${formData.phone}
+📦 *প্যাকেজ:* ${formData.packageName}
+📍 *এরিয়া / এলাকা:* ${formData.area || "N/A"}
+🏠 *ঠিকানা:* ${formData.address || "N/A"}
+----------------------------------------
+*NETCAFE Fiber Broadband*`;
+
+        const targetWaNumber = (whatsappNumber || "8801622280960").replace(/[^0-9]/g, "");
+        const waUrl = `https://wa.me/${targetWaNumber}?text=${encodeURIComponent(messageText)}`;
+        setWaLink(waUrl);
+
+        // Auto open WhatsApp notification
+        try {
+          window.open(waUrl, "_blank");
+        } catch (_) {}
+      } else {
+        setErrorMsg(res.message || "আবেদন জমা নেওয়া সম্ভব হয়নি। আবার চেষ্টা করুন।");
+      }
+    } catch (err: any) {
+      setErrorMsg("Error submitting request.");
+    } finally {
       setSubmitting(false);
-      setRefId("CONN-" + Math.floor(100000 + Math.random() * 900000));
-      setSubmitted(true);
-    }, 700);
+    }
   };
 
   const handleClose = () => {
     setSubmitted(false);
+    setErrorMsg("");
     onClose();
   };
 
@@ -83,14 +127,26 @@ export function OrderModal({ isOpen, onClose, initialPackage, initialArea, hotli
 
             <p className="text-xs sm:text-sm text-slate-300 max-w-md mx-auto leading-relaxed">
               {t({
-                bn: "আপনার নতুন অপটিক্যাল ফাইবার সংযোগের আবেদনটি জমা হয়েছে। আপনার রেফারেন্স ট্র্যাকিং কোড:",
-                en: "Your fiber connection request is registered. Your reference tracking code:",
+                bn: "আপনার নতুন অপটিক্যাল ফাইবার সংযোগের আবেদনটি ডাটাবেজে সংরক্ষিত হয়েছে এবং WhatsApp নোটিফিকেশন পাঠানো হয়েছে। রেফারেন্স ট্র্যাকিং কোড:",
+                en: "Your connection request is saved in system & sent to WhatsApp. Reference code:",
               })}
             </p>
 
             <div className="inline-block px-4 py-2 rounded-xl bg-slate-900 border border-indigo-500/40 text-orange-400 font-mono font-bold text-lg">
               {refId}
             </div>
+
+            {waLink && (
+              <a
+                href={waLink}
+                target="_blank"
+                rel="noreferrer"
+                className="w-full py-3.5 px-4 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs sm:text-sm transition flex items-center justify-center gap-2 shadow-lg shadow-emerald-600/20"
+              >
+                <MessageCircle className="w-4 h-4 fill-current" />
+                <span>WhatsApp এ মেসেজ নোটিফিকেশন খুলুন</span>
+              </a>
+            )}
 
             <div className="p-4 rounded-xl bg-slate-900/60 border border-slate-800 text-xs text-slate-400 space-y-2 text-left">
               <p className="flex items-center gap-2 text-slate-200 font-semibold">
@@ -99,15 +155,15 @@ export function OrderModal({ isOpen, onClose, initialPackage, initialArea, hotli
               </p>
               <p>
                 {t({
-                  bn: `আমাদের নিকটস্থ ফিল্ড টেকনিশিয়ান আগামী ৪ ঘণ্টার মধ্যে আপনার সাথে ফোনে যোগাযোগ করে ফাইবার লাইন সেটআপ সম্পন্ন করবেন। প্রয়োজনে হটলাইন: ${hotline || "16234"}।`,
-                  en: `Our field technician will call you within 4 hours to setup your fiber line. Hotline: ${hotline || "16234"}.`,
+                  bn: `আমাদের প্রতিনিধি এবং ফিল্ড টেকনিশিয়ান আপনার সাথে দ্রুত যোগাযোগ করে ফাইবার লাইন সেটআপ সম্পন্ন করবেন। প্রয়োজন হটলাইন: ${hotline || "১৬২৩৪"}।`,
+                  en: `Our team will call you shortly to setup your line. Hotline: ${hotline || "16234"}.`,
                 })}
               </p>
             </div>
 
             <button
               onClick={handleClose}
-              className="w-full py-3 rounded-xl bg-gradient-to-r from-orange-500 to-amber-500 text-white font-bold text-sm"
+              className="w-full py-3 rounded-xl bg-slate-800 hover:bg-slate-700 text-white font-bold text-sm"
             >
               {t({ bn: "ঠিক আছে", en: "Done" })}
             </button>
@@ -125,11 +181,18 @@ export function OrderModal({ isOpen, onClose, initialPackage, initialArea, hotli
               </h3>
               <p className="text-xs text-slate-400 mt-1">
                 {t({
-                  bn: "আপনার তথ্য দিন, আমাদের টিম দ্রুত ফাইবার লাইন সংযোগ দেবে।",
+                  bn: "আপনার তথ্য দিন, আমাদের টিম ডাটাবেজ ও WhatsApp এ নোটিফিকেশন পেয়ে দ্রুত ফাইবার লাইন সংযোগ দেবে।",
                   en: "Fill in the details below and get connected to high-speed fiber.",
                 })}
               </p>
             </div>
+
+            {errorMsg && (
+              <div className="mb-4 p-3 rounded-xl bg-rose-500/10 border border-rose-500/20 text-rose-300 text-xs flex items-center gap-2">
+                <AlertCircle className="w-4 h-4 text-rose-400 shrink-0" />
+                <span>{errorMsg}</span>
+              </div>
+            )}
 
             {/* Application Form */}
             <form onSubmit={handleSubmit} className="space-y-4">
@@ -206,11 +269,14 @@ export function OrderModal({ isOpen, onClose, initialPackage, initialArea, hotli
               <button
                 type="submit"
                 disabled={submitting}
-                className="w-full py-3.5 rounded-xl bg-gradient-to-r from-orange-500 via-amber-500 to-indigo-600 hover:from-orange-600 hover:to-indigo-700 text-white font-bold text-sm shadow-lg shadow-orange-500/20 transition disabled:opacity-50"
+                className="w-full py-3.5 rounded-xl bg-gradient-to-r from-orange-500 via-amber-500 to-indigo-600 hover:from-orange-600 hover:to-indigo-700 text-white font-bold text-sm shadow-lg shadow-orange-500/20 transition disabled:opacity-50 flex items-center justify-center gap-2"
               >
-                {submitting
-                  ? t({ bn: "সাবমিট হচ্ছে...", en: "Submitting Request..." })
-                  : t({ bn: "আবেদন সাবমিট করুন (ফ্রি ইনস্টলেশন)", en: "Submit Order (Free Install)" })}
+                <MessageCircle className="w-4 h-4" />
+                <span>
+                  {submitting
+                    ? t({ bn: "সাবমিট হচ্ছে...", en: "Submitting Request..." })
+                    : t({ bn: "আবেদন করুন (WhatsApp নোটিফিকেশন সহ)", en: "Submit Order (With WhatsApp Alert)" })}
+                </span>
               </button>
             </form>
           </div>
@@ -219,4 +285,3 @@ export function OrderModal({ isOpen, onClose, initialPackage, initialArea, hotli
     </div>
   );
 }
-
