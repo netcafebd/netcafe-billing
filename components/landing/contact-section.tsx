@@ -5,6 +5,15 @@ import { useLanguage } from "./language-context";
 import { submitContactMessageAction } from "@/app/actions/inquiries.actions";
 import { MapPin, PhoneCall, Mail, Send, CheckCircle2, Headphones, AlertCircle, Loader2, MessageCircle } from "lucide-react";
 
+// Unicode Surrogate Pairs for 100% reliable WhatsApp Emojis across all build tools & OS
+const EMOJI = {
+  ENVELOPE: "\uD83D\uDCE9", // 📩
+  USER: "\uD83D\uDC64",     // 👤
+  PHONE: "\uD83D\uDCDE",    // 📞
+  PUSHPIN: "\uD83D\uDCCC",  // 📌
+  CHAT: "\uD83D\uDCAC",     // 💬
+};
+
 interface ContactSectionProps {
   hotline?: string;
   supportPhone?: string;
@@ -42,18 +51,18 @@ export function ContactSection({ hotline, supportPhone, email, officeAddress, wh
       if (res.success) {
         setSubmitted(true);
 
-        // Build WhatsApp Alert URL with full emojis
-        const messageText = `📩 *NETCAFE ওয়েবসাইট নতুন মেসেজ / সাপোর্ট টিকিট* 📩
+        // Build WhatsApp Alert URL with full unicode surrogate pairs
+        const messageText = `${EMOJI.ENVELOPE} *NETCAFE ওয়েবসাইট নতুন মেসেজ / সাপোর্ট টিকিট* ${EMOJI.ENVELOPE}
 ----------------------------------------
-👤 *প্রেরকের নাম:* ${name}
-📞 *মোবাইল নম্বর:* ${phone}
-📌 *বিষয়:* ${subject}
-💬 *মেসেজ:* ${message}
+${EMOJI.USER} *প্রেরকের নাম:* ${name}
+${EMOJI.PHONE} *মোবাইল নম্বর:* ${phone}
+${EMOJI.PUSHPIN} *বিষয়:* ${subject}
+${EMOJI.CHAT} *মেসেজ:* ${message}
 ----------------------------------------
 *NETCAFE Helpdesk System*`;
 
         const targetWaNumber = (whatsappNumber || "8801622280960").replace(/[^0-9]/g, "");
-        const waUrl = `https://wa.me/${targetWaNumber}?text=${encodeURIComponent(messageText)}`;
+        const waUrl = `https://api.whatsapp.com/send?phone=${targetWaNumber}&text=${encodeURIComponent(messageText)}`;
         setWaLink(waUrl);
 
         try {
@@ -147,7 +156,7 @@ export function ContactSection({ hotline, supportPhone, email, officeAddress, wh
                     className="w-full py-3.5 px-4 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs sm:text-sm transition flex items-center justify-center gap-2 shadow-lg shadow-emerald-600/20"
                   >
                     <MessageCircle className="w-4 h-4 fill-current" />
-                    <span>WhatsApp এ সরাসরি নোটিফিকেশন চালু করুন 💬</span>
+                    <span>WhatsApp এ সরাসরি নোটিফিকেশন চালু করুন {EMOJI.CHAT}</span>
                   </a>
                 )}
               </div>

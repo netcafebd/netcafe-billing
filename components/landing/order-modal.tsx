@@ -5,6 +5,19 @@ import { useLanguage } from "./language-context";
 import { submitConnectionRequestAction } from "@/app/actions/inquiries.actions";
 import { X, Zap, CheckCircle2, ShieldCheck, PhoneCall, MapPin, User, AlertCircle, MessageCircle } from "lucide-react";
 
+// Unicode Surrogate Pairs for 100% reliable WhatsApp Emojis across all build tools & OS
+const EMOJI = {
+  GLOBE: "\uD83C\uDF10",    // 🌐
+  ID: "\uD83C\uDD94",       // 🆔
+  USER: "\uD83D\uDC64",     // 👤
+  PHONE: "\uD83D\uDCDE",    // 📞
+  PACKAGE: "\uD83D\uDCE6",  // 📦
+  PIN: "\uD83D\uDCCD",      // 📍
+  HOME: "\uD83C\uDFE0",     // 🏠
+  CHECK: "\u2705",          // ✅
+  CHAT: "\uD83D\uDCAC",     // 💬
+};
+
 interface OrderModalProps {
   isOpen: boolean;
   onClose: () => void;
@@ -68,20 +81,20 @@ export function OrderModal({ isOpen, onClose, initialPackage, initialArea, hotli
         setRefId(trackingCode);
         setSubmitted(true);
 
-        // Format WhatsApp Message with full emojis
-        const messageText = `🌐 *নতুন ফাইবার ব্রডব্যান্ড সংযোগ আবেদন* 🌐
+        // Format WhatsApp Message using guaranteed unicode surrogate pairs
+        const messageText = `${EMOJI.GLOBE} *নতুন ফাইবার ব্রডব্যান্ড সংযোগ আবেদন* ${EMOJI.GLOBE}
 ----------------------------------------
-🆔 *রেফারেন্স কোড:* ${trackingCode}
-👤 *গ্রাহকের নাম:* ${formData.name}
-📞 *মোবাইল নম্বর:* ${formData.phone}
-📦 *প্যাকেজ:* ${formData.packageName}
-📍 *এরিয়া / এলাকা:* ${formData.area || "N/A"}
-🏠 *ঠিকানা:* ${formData.address || "N/A"}
+${EMOJI.ID} *রেফারেন্স কোড:* ${trackingCode}
+${EMOJI.USER} *গ্রাহকের নাম:* ${formData.name}
+${EMOJI.PHONE} *মোবাইল নম্বর:* ${formData.phone}
+${EMOJI.PACKAGE} *প্যাকেজ:* ${formData.packageName}
+${EMOJI.PIN} *এরিয়া / এলাকা:* ${formData.area || "N/A"}
+${EMOJI.HOME} *ঠিকানা:* ${formData.address || "N/A"}
 ----------------------------------------
 *NETCAFE Fiber Broadband*`;
 
         const targetWaNumber = (whatsappNumber || "8801622280960").replace(/[^0-9]/g, "");
-        const waUrl = `https://wa.me/${targetWaNumber}?text=${encodeURIComponent(messageText)}`;
+        const waUrl = `https://api.whatsapp.com/send?phone=${targetWaNumber}&text=${encodeURIComponent(messageText)}`;
         setWaLink(waUrl);
 
         // Auto open WhatsApp notification
@@ -144,7 +157,7 @@ export function OrderModal({ isOpen, onClose, initialPackage, initialArea, hotli
                 className="w-full py-3.5 px-4 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs sm:text-sm transition flex items-center justify-center gap-2 shadow-lg shadow-emerald-600/20"
               >
                 <MessageCircle className="w-4 h-4 fill-current" />
-                <span>WhatsApp এ মেসেজ নোটিফিকেশন খুলুন 💬</span>
+                <span>WhatsApp এ মেসেজ নোটিফিকেশন খুলুন {EMOJI.CHAT}</span>
               </a>
             )}
 
