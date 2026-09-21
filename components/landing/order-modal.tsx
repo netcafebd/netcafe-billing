@@ -7,15 +7,14 @@ import { X, Zap, CheckCircle2, ShieldCheck, PhoneCall, MapPin, User, AlertCircle
 
 // Unicode Surrogate Pairs for 100% reliable WhatsApp Emojis across all build tools & OS
 const EMOJI = {
-  GLOBE: "\uD83C\uDF10",    // 🌐
-  ID: "\uD83C\uDD94",       // 🆔
-  USER: "\uD83D\uDC64",     // 👤
-  PHONE: "\uD83D\uDCDE",    // 📞
-  PACKAGE: "\uD83D\uDCE6",  // 📦
-  PIN: "\uD83D\uDCCD",      // 📍
-  HOME: "\uD83C\uDFE0",     // 🏠
-  CHECK: "\u2705",          // ✅
-  CHAT: "\uD83D\uDCAC",     // 💬
+  GLOBE: "\uD83C\uDF10",   // 🌐
+  ID: "\uD83C\uDD94",      // 🆔
+  USER: "\uD83D\uDC64",    // 👤
+  MOBILE: "\uD83D\uDCF1",  // 📱
+  PACKAGE: "\uD83D\uDCE6", // 📦
+  PIN: "\uD83D\uDCCD",     // 📍
+  HOME: "\uD83C\uDFE0",    // 🏠
+  CHAT: "\uD83D\uDCAC",    // 💬
 };
 
 interface OrderModalProps {
@@ -81,17 +80,17 @@ export function OrderModal({ isOpen, onClose, initialPackage, initialArea, hotli
         setRefId(trackingCode);
         setSubmitted(true);
 
-        // Format WhatsApp Message using guaranteed unicode surrogate pairs
-        const messageText = `${EMOJI.GLOBE} *নতুন ফাইবার ব্রডব্যান্ড সংযোগ আবেদন* ${EMOJI.GLOBE}
-----------------------------------------
-${EMOJI.ID} *রেফারেন্স কোড:* ${trackingCode}
-${EMOJI.USER} *গ্রাহকের নাম:* ${formData.name}
-${EMOJI.PHONE} *মোবাইল নম্বর:* ${formData.phone}
-${EMOJI.PACKAGE} *প্যাকেজ:* ${formData.packageName}
-${EMOJI.PIN} *এরিয়া / এলাকা:* ${formData.area || "N/A"}
-${EMOJI.HOME} *ঠিকানা:* ${formData.address || "N/A"}
-----------------------------------------
-*NETCAFE Fiber Broadband*`;
+        // Clean WhatsApp Message format without markdown asterisks breaking Bengali diacritics
+        const messageText = `${EMOJI.GLOBE} NETCAFE নতুন ফাইবার সংযোগ আবেদন
+
+${EMOJI.ID} রেফারেন্স: ${trackingCode}
+${EMOJI.USER} নাম: ${formData.name}
+${EMOJI.MOBILE} মোবাইল: ${formData.phone}
+${EMOJI.PACKAGE} প্যাকেজ: ${formData.packageName}
+${EMOJI.PIN} এলাকা: ${formData.area || "N/A"}
+${EMOJI.HOME} ঠিকানা: ${formData.address || "N/A"}
+
+NETCAFE Fiber Broadband`;
 
         const targetWaNumber = (whatsappNumber || "8801622280960").replace(/[^0-9]/g, "");
         const waUrl = `https://api.whatsapp.com/send?phone=${targetWaNumber}&text=${encodeURIComponent(messageText)}`;

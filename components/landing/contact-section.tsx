@@ -9,7 +9,7 @@ import { MapPin, PhoneCall, Mail, Send, CheckCircle2, Headphones, AlertCircle, L
 const EMOJI = {
   ENVELOPE: "\uD83D\uDCE9", // 📩
   USER: "\uD83D\uDC64",     // 👤
-  PHONE: "\uD83D\uDCDE",    // 📞
+  MOBILE: "\uD83D\uDCF1",   // 📱
   PUSHPIN: "\uD83D\uDCCC",  // 📌
   CHAT: "\uD83D\uDCAC",     // 💬
 };
@@ -51,15 +51,15 @@ export function ContactSection({ hotline, supportPhone, email, officeAddress, wh
       if (res.success) {
         setSubmitted(true);
 
-        // Build WhatsApp Alert URL with full unicode surrogate pairs
-        const messageText = `${EMOJI.ENVELOPE} *NETCAFE ওয়েবসাইট নতুন মেসেজ / সাপোর্ট টিকিট* ${EMOJI.ENVELOPE}
-----------------------------------------
-${EMOJI.USER} *প্রেরকের নাম:* ${name}
-${EMOJI.PHONE} *মোবাইল নম্বর:* ${phone}
-${EMOJI.PUSHPIN} *বিষয়:* ${subject}
-${EMOJI.CHAT} *মেসেজ:* ${message}
-----------------------------------------
-*NETCAFE Helpdesk System*`;
+        // Build WhatsApp Alert URL with clean Bengali formatting
+        const messageText = `${EMOJI.ENVELOPE} NETCAFE ওয়েবসাইট সাপোর্ট মেসেজ
+
+${EMOJI.USER} নাম: ${name}
+${EMOJI.MOBILE} মোবাইল: ${phone}
+${EMOJI.PUSHPIN} বিষয়: ${subject}
+${EMOJI.CHAT} মেসেজ: ${message}
+
+NETCAFE Helpdesk System`;
 
         const targetWaNumber = (whatsappNumber || "8801622280960").replace(/[^0-9]/g, "");
         const waUrl = `https://api.whatsapp.com/send?phone=${targetWaNumber}&text=${encodeURIComponent(messageText)}`;
