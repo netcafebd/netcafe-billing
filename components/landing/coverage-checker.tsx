@@ -199,3 +199,4 @@ export function CoverageChecker({ onOpenOrderWithArea, customCoverageText, hotli
     </section>
   );
 }
+

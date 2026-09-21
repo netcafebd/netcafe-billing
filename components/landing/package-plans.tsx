@@ -2,7 +2,7 @@
 
 import React, { useState } from "react";
 import { useLanguage } from "./language-context";
-import { Check, Zap, ArrowRight, Flame, Sparkles, Server } from "lucide-react";
+import { Check, Zap, ArrowRight, Flame, Sparkles, Server, PhoneCall } from "lucide-react";
 
 const defaultPackages: Record<string, any[]> = {
   home: [
@@ -166,9 +166,10 @@ const defaultPackages: Record<string, any[]> = {
 interface PackagePlansProps {
   onSelectPackage: (pkg: any) => void;
   customPackagesJson?: string;
+  hotline?: string;
 }
 
-export function PackagePlans({ onSelectPackage, customPackagesJson }: PackagePlansProps) {
+export function PackagePlans({ onSelectPackage, customPackagesJson, hotline }: PackagePlansProps) {
   const { t } = useLanguage();
   const [activeTab, setActiveTab] = useState("home");
 
@@ -297,9 +298,14 @@ export function PackagePlans({ onSelectPackage, customPackagesJson }: PackagePla
                     </p>
                   </div>
 
-                  <div className="mb-6 flex items-baseline gap-1.5">
-                    <span className="text-3xl sm:text-4xl font-black text-white">৳{pkg.price}</span>
-                    <span className="text-xs text-slate-400 font-medium">/{t(pkg.period || { bn: "মাস", en: "month" })}</span>
+                  <div className="mb-6">
+                    <div className="flex items-baseline gap-1.5">
+                      <span className="text-3xl sm:text-4xl font-black text-white">৳{pkg.price}</span>
+                      <span className="text-xs text-slate-400 font-medium">/{t(pkg.period || { bn: "প্রতি মাস", en: "per month" })}</span>
+                    </div>
+                    <p className="text-[11px] text-slate-500 font-medium mt-0.5">
+                      {t({ bn: "(+ভ্যাট প্রযোজ্য)", en: "(+VAT Applicable)" })}
+                    </p>
                   </div>
 
                   <div className="space-y-2.5 mb-6 text-xs sm:text-sm text-slate-300 border-t border-slate-800 pt-5">
@@ -315,21 +321,52 @@ export function PackagePlans({ onSelectPackage, customPackagesJson }: PackagePla
                   </div>
                 </div>
 
-                <button
-                  type="button"
-                  onClick={() => onSelectPackage(pkg)}
-                  className={`w-full py-3.5 rounded-2xl font-bold text-xs sm:text-sm transition flex items-center justify-center gap-2 group ${
-                    isPopular
-                      ? "bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600 text-white shadow-lg shadow-orange-500/25"
-                      : "bg-slate-900 hover:bg-slate-800 text-white border border-slate-700"
-                  }`}
-                >
-                  <span>{t({ bn: "সংযোগ বুক করুন", en: "Order Connection" })}</span>
-                  <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition" />
-                </button>
+                <div>
+                  <button
+                    type="button"
+                    onClick={() => onSelectPackage(pkg)}
+                    className={`w-full py-3.5 rounded-2xl font-bold text-xs sm:text-sm transition flex items-center justify-center gap-2 group ${
+                      isPopular
+                        ? "bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600 text-white shadow-lg shadow-orange-500/25"
+                        : "bg-slate-900 hover:bg-slate-800 text-white border border-slate-700"
+                    }`}
+                  >
+                    <span>{t({ bn: "সংযোগটি অর্ডার করুন", en: "Order Connection" })}</span>
+                    <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition" />
+                  </button>
+
+                  {pkg.idealFor && (
+                    <p className="text-[11px] text-slate-400 text-center mt-2.5 font-medium">
+                      {t(pkg.idealFor)}
+                    </p>
+                  )}
+                </div>
               </div>
             );
           })}
+        </div>
+
+        {/* Enterprise Customized Bandwidth Banner */}
+        <div className="mt-14 rounded-3xl p-6 sm:p-8 bg-gradient-to-r from-slate-950 via-indigo-950/60 to-slate-950 border border-indigo-500/30 flex flex-col md:flex-row items-center justify-between gap-6 shadow-2xl">
+          <div className="space-y-1.5 text-center md:text-left">
+            <h4 className="text-lg sm:text-xl font-bold text-white">
+              {t({ bn: "আপনার কি কাস্টমাইজড বা বড় ব্যান্ডউইথ প্রয়োজন?", en: "Need customized bandwidth or enterprise connectivity?" })}
+            </h4>
+            <p className="text-xs sm:text-sm text-slate-300">
+              {t({
+                bn: "আমাদের এন্টারপ্রাইজ টিম আপনার প্রতিষ্ঠানের উপযোগী স্পেশাল ব্যান্ডউইথ কোটেশন ও অন-সাইট সার্ভে অফার করে।",
+                en: "Our enterprise team offers custom bandwidth quotations, optical fiber redundancy, and on-site surveys for your business.",
+              })}
+            </p>
+          </div>
+
+          <a
+            href={`tel:${hotline || "16234"}`}
+            className="px-6 py-3.5 rounded-xl bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600 text-white font-bold text-xs sm:text-sm shadow-lg shadow-orange-500/20 transition flex items-center gap-2 shrink-0"
+          >
+            <PhoneCall className="w-4 h-4" />
+            <span>{t({ bn: `কর্পোরেট হটলাইন: ${hotline || "১৬২৩৪"}`, en: `Corporate Hotline: ${hotline || "16234"}` })}</span>
+          </a>
         </div>
       </div>
     </section>

@@ -2,7 +2,21 @@
 
 import React from "react";
 import { useLanguage } from "./language-context";
-import { Zap, MapPin, CreditCard, Activity, CheckCircle2, ArrowRight, Flame } from "lucide-react";
+import {
+  Zap,
+  MapPin,
+  CreditCard,
+  Activity,
+  CheckCircle2,
+  ArrowRight,
+  Flame,
+  Users,
+  Wifi,
+  Tv,
+  Clock,
+  ShieldCheck,
+  Headphones,
+} from "lucide-react";
 
 interface HeroProps {
   onOpenOrder: () => void;
@@ -16,7 +30,8 @@ export function Hero({ onOpenOrder, heroNotice, heroTitle, heroSubtitle, ispName
   const { t } = useLanguage();
 
   return (
-    <section id="hero" className="relative overflow-hidden pt-8 pb-20 md:py-24 bg-hero-pattern">
+    <section id="hero" className="relative overflow-hidden pt-8 pb-16 md:pt-12 md:pb-24 bg-[#080d1a]">
+      {/* Glow Effects */}
       <div className="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-indigo-600/15 rounded-full blur-3xl pointer-events-none" />
       <div className="absolute top-1/3 right-10 w-72 h-72 bg-orange-500/10 rounded-full blur-3xl pointer-events-none" />
 
@@ -31,7 +46,7 @@ export function Hero({ onOpenOrder, heroNotice, heroTitle, heroSubtitle, ispName
                 {heroNotice ||
                   t({
                     bn: "নতুন গ্রাহকদের জন্য ফ্রি ফাইবার ইনস্টলেশন অফার!",
-                    en: "Free Optical Fiber Installation for New Connections!",
+                    en: "Free Optical Fiber Installation Offer for New Connections!",
                   })}
               </span>
             </div>
@@ -94,7 +109,7 @@ export function Hero({ onOpenOrder, heroNotice, heroTitle, heroSubtitle, ispName
             </div>
           </div>
 
-          {/* Right Column */}
+          {/* Right Performance Card */}
           <div className="lg:col-span-5 relative">
             <div className="relative mx-auto max-w-md p-6 sm:p-8 rounded-3xl bg-slate-900/80 border border-indigo-500/30 shadow-2xl shadow-indigo-950/60 backdrop-blur-sm">
               <div className="flex items-center justify-between border-b border-slate-800 pb-4 mb-6">
@@ -105,7 +120,7 @@ export function Hero({ onOpenOrder, heroNotice, heroTitle, heroSubtitle, ispName
                   <div>
                     <h3 className="text-white font-bold text-sm sm:text-base">{ispName || "NETCAFE Gigabit Fiber"}</h3>
                     <p className="text-xs text-emerald-400 flex items-center gap-1">
-                      <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
+                      <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping" />
                       {t({ bn: "নেটওয়ার্ক স্ট্যাটাস: অপ্টিমাল", en: "Network Status: Optimal" })}
                     </p>
                   </div>
@@ -118,7 +133,7 @@ export function Hero({ onOpenOrder, heroNotice, heroTitle, heroSubtitle, ispName
               <div className="space-y-4">
                 <div className="p-4 rounded-2xl bg-slate-950/70 border border-slate-800/80 space-y-2">
                   <div className="flex justify-between text-xs text-slate-400">
-                    <span>{t({ bn: "ইন্টারন্যাশনাল স্পিড", en: "International Bandwidth" })}</span>
+                    <span>{t({ bn: "ইন্টারন্যাশনাল স্পিড", en: "International Speed" })}</span>
                     <span className="text-indigo-400 font-bold">100 - 200 Mbps</span>
                   </div>
                   <div className="w-full h-2.5 bg-slate-800 rounded-full overflow-hidden">
@@ -128,7 +143,7 @@ export function Hero({ onOpenOrder, heroNotice, heroTitle, heroSubtitle, ispName
 
                 <div className="p-4 rounded-2xl bg-slate-950/70 border border-slate-800/80 space-y-2">
                   <div className="flex justify-between text-xs text-slate-400">
-                    <span>{t({ bn: "BDIX লোকাল ব্যান্ডউইথ", en: "BDIX Peering Bandwidth" })}</span>
+                    <span>{t({ bn: "BDIX লোকাল ব্যান্ডউইথ", en: "BDIX Local Bandwidth" })}</span>
                     <span className="text-orange-400 font-bold">100+ Mbps (Ultra)</span>
                   </div>
                   <div className="w-full h-2.5 bg-slate-800 rounded-full overflow-hidden">
@@ -138,8 +153,8 @@ export function Hero({ onOpenOrder, heroNotice, heroTitle, heroSubtitle, ispName
 
                 <div className="p-4 rounded-2xl bg-slate-950/70 border border-slate-800/80 space-y-2">
                   <div className="flex justify-between text-xs text-slate-400">
-                    <span>{t({ bn: "লেটেন্সি (Ping)", en: "Latency (Ping)" })}</span>
-                    <span className="text-emerald-400 font-bold">1ms BDIX Ping</span>
+                    <span>{t({ bn: "গড়ে গেমিং লেটেন্সি (Ping)", en: "Gaming Latency (Ping)" })}</span>
+                    <span className="text-emerald-400 font-bold">&lt; 15 ms (Singapore/BD)</span>
                   </div>
                   <div className="w-full h-2.5 bg-slate-800 rounded-full overflow-hidden">
                     <div className="h-full bg-gradient-to-r from-emerald-500 to-emerald-400 rounded-full w-[98%]" />
@@ -147,6 +162,45 @@ export function Hero({ onOpenOrder, heroNotice, heroTitle, heroSubtitle, ispName
                 </div>
               </div>
             </div>
+          </div>
+        </div>
+
+        {/* Counter Statistics Bar */}
+        <div className="mt-16 pt-10 border-t border-slate-800/70 grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4 text-center">
+          <div className="p-4 rounded-2xl bg-slate-950/60 border border-slate-800/80 hover:border-indigo-500/30 transition">
+            <ShieldCheck className="w-6 h-6 text-emerald-400 mx-auto mb-2" />
+            <p className="text-2xl sm:text-3xl font-black text-white">৯৯.৯%</p>
+            <p className="text-xs text-slate-400 mt-1 font-medium">{t({ bn: "আপটাইম এসএলএ", en: "Uptime SLA" })}</p>
+          </div>
+
+          <div className="p-4 rounded-2xl bg-slate-950/60 border border-slate-800/80 hover:border-indigo-500/30 transition">
+            <Headphones className="w-6 h-6 text-orange-400 mx-auto mb-2" />
+            <p className="text-2xl sm:text-3xl font-black text-white">২৪/৭</p>
+            <p className="text-xs text-slate-400 mt-1 font-medium">{t({ bn: "অন-ফিল্ড সাপোর্ট", en: "On-Field Support" })}</p>
+          </div>
+
+          <div className="p-4 rounded-2xl bg-slate-950/60 border border-slate-800/80 hover:border-indigo-500/30 transition">
+            <Users className="w-6 h-6 text-indigo-400 mx-auto mb-2" />
+            <p className="text-2xl sm:text-3xl font-black text-white">১,৫০,০০০+</p>
+            <p className="text-xs text-slate-400 mt-1 font-medium">{t({ bn: "সন্তুষ্ট গ্রাহক", en: "Satisfied Customers" })}</p>
+          </div>
+
+          <div className="p-4 rounded-2xl bg-slate-950/60 border border-slate-800/80 hover:border-indigo-500/30 transition">
+            <Wifi className="w-6 h-6 text-amber-400 mx-auto mb-2" />
+            <p className="text-2xl sm:text-3xl font-black text-white">১২০+ কিমি</p>
+            <p className="text-xs text-slate-400 mt-1 font-medium">{t({ bn: "ফাইবার ব্যাকবোন", en: "Fiber Backbone" })}</p>
+          </div>
+
+          <div className="p-4 rounded-2xl bg-slate-950/60 border border-slate-800/80 hover:border-indigo-500/30 transition">
+            <Tv className="w-6 h-6 text-cyan-400 mx-auto mb-2" />
+            <p className="text-2xl sm:text-3xl font-black text-white">৫০+ টিভি</p>
+            <p className="text-xs text-slate-400 mt-1 font-medium">{t({ bn: "এইচডি লাইভ চ্যানেল", en: "HD Live Channels" })}</p>
+          </div>
+
+          <div className="p-4 rounded-2xl bg-slate-950/60 border border-slate-800/80 hover:border-indigo-500/30 transition">
+            <Clock className="w-6 h-6 text-rose-400 mx-auto mb-2" />
+            <p className="text-2xl sm:text-3xl font-black text-white">&lt; ২ ঘণ্টা</p>
+            <p className="text-xs text-slate-400 mt-1 font-medium">{t({ bn: "দ্রুত সমাধান সময়", en: "Fast Resolution Time" })}</p>
           </div>
         </div>
       </div>

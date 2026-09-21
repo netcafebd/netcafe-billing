@@ -185,3 +185,4 @@ export function Navbar({ hotline, selfCareHref, isLoggedIn, onOpenOrderModal }: 
     </>
   );
 }
+
