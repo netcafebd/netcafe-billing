@@ -20,7 +20,7 @@ import {
   AlertCircle,
 } from "lucide-react";
 import { BillStatus } from "@prisma/client";
-import { DEFAULT_BKASH_QR_IMAGE } from "@/lib/constants/qr";
+import { DEFAULT_BKASH_QR_IMAGE, getEffectiveBkashQr } from "@/lib/constants/qr";
 
 interface PayBillFormProps {
   bills: Array<{
@@ -209,12 +209,7 @@ export function PayBillForm({
                 Or Scan bKash Bangla QR
               </span>
               {(() => {
-                const qrSrc =
-                  ispSettings.bkashQrCode &&
-                  ispSettings.bkashQrCode.trim() !== "" &&
-                  ispSettings.bkashQrCode !== "/images/bkash-qr.png"
-                    ? ispSettings.bkashQrCode
-                    : DEFAULT_BKASH_QR_IMAGE;
+                const qrSrc = getEffectiveBkashQr(ispSettings.bkashQrCode);
 
                 return qrSrc.startsWith("<svg") ? (
                   <div

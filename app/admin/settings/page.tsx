@@ -6,6 +6,7 @@ import { SettingsForm } from "./settings-form";
 import { AdminPasswordForm } from "@/components/admin/admin-password-form";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Lock } from "lucide-react";
+import { isDefaultOrMockQr } from "@/lib/constants/qr";
 
 export const dynamic = "force-dynamic";
 
@@ -38,7 +39,7 @@ export default async function SettingsPage() {
           ispName: settings.ispName,
           supportPhone: settings.supportPhone,
           bkashNumber: settings.bkashNumber,
-          bkashQrCode: settings.bkashQrCode === "/images/bkash-qr.png" ? "" : (settings.bkashQrCode || ""),
+          bkashQrCode: isDefaultOrMockQr(settings.bkashQrCode) ? "" : (settings.bkashQrCode || ""),
           paymentInstructions: settings.paymentInstructions || "",
         }}
       />

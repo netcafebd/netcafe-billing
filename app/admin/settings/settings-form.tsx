@@ -7,7 +7,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { updateISPSettingsAction } from "@/app/actions/settings.actions";
 import { QrCode, Phone, CheckCircle2, Copy } from "lucide-react";
-import { DEFAULT_BKASH_QR_IMAGE } from "@/lib/constants/qr";
+import { DEFAULT_BKASH_QR_IMAGE, getEffectiveBkashQr } from "@/lib/constants/qr";
 
 interface SettingsFormProps {
   initialSettings: {
@@ -175,12 +175,7 @@ export function SettingsForm({ initialSettings }: SettingsFormProps) {
             <div className="flex flex-col items-center justify-center p-4 bg-white rounded-xl border border-slate-200">
               <span className="text-xs font-medium text-slate-500 mb-2">Scan with bKash App</span>
               {(() => {
-                const qrSrc =
-                  form.bkashQrCode &&
-                  form.bkashQrCode.trim() !== "" &&
-                  form.bkashQrCode !== "/images/bkash-qr.png"
-                    ? form.bkashQrCode
-                    : DEFAULT_BKASH_QR_IMAGE;
+                const qrSrc = getEffectiveBkashQr(form.bkashQrCode);
 
                 return qrSrc.startsWith("<svg") ? (
                   <div
