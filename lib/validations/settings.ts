@@ -7,6 +7,8 @@ export const settingsUpdateSchema = z.object({
     .min(5, "Support Phone is required")
     .trim(),
   hotline: z.string().optional().default("16234"),
+  email: z.string().optional().default("support@netcafe-bd.com"),
+  officeAddress: z.string().optional().default(""),
   bkashNumber: z
     .string()
     .min(11, "bKash Number must be at least 11 digits")
@@ -18,6 +20,8 @@ export const settingsUpdateSchema = z.object({
   heroNotice: z.string().optional().default(""),
   coverageArea: z.string().optional().default(""),
   packagesJson: z.string().optional().default(""),
+  whyUsJson: z.string().optional().default(""),
+  ftpServersJson: z.string().optional().default(""),
 });
 
 export type SettingsUpdateInput = z.infer<typeof settingsUpdateSchema>;

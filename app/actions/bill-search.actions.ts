@@ -95,3 +95,4 @@ export async function searchCustomerBillAction(searchQuery: string): Promise<Bil
     return { success: false, message: "An error occurred while searching for the bill." };
   }
 }
+

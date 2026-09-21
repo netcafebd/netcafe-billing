@@ -18,6 +18,8 @@ export async function updateISPSettingsAction(data: any) {
     ispName,
     supportPhone,
     hotline,
+    email,
+    officeAddress,
     bkashNumber,
     bkashQrCode,
     paymentInstructions,
@@ -26,6 +28,8 @@ export async function updateISPSettingsAction(data: any) {
     heroNotice,
     coverageArea,
     packagesJson,
+    whyUsJson,
+    ftpServersJson,
   } = parsed.data;
 
   try {
@@ -39,6 +43,8 @@ export async function updateISPSettingsAction(data: any) {
           ispName,
           supportPhone,
           hotline,
+          email,
+          officeAddress,
           bkashNumber,
           bkashQrCode,
           paymentInstructions,
@@ -47,6 +53,8 @@ export async function updateISPSettingsAction(data: any) {
           heroNotice,
           coverageArea,
           packagesJson,
+          whyUsJson,
+          ftpServersJson,
         },
       });
     } else {
@@ -55,6 +63,8 @@ export async function updateISPSettingsAction(data: any) {
           ispName,
           supportPhone,
           hotline,
+          email,
+          officeAddress,
           bkashNumber,
           bkashQrCode,
           paymentInstructions,
@@ -63,6 +73,8 @@ export async function updateISPSettingsAction(data: any) {
           heroNotice,
           coverageArea,
           packagesJson,
+          whyUsJson,
+          ftpServersJson,
         },
       });
     }

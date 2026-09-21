@@ -14,6 +14,8 @@ interface SettingsFormProps {
     ispName: string;
     supportPhone: string;
     hotline: string;
+    email: string;
+    officeAddress: string;
     bkashNumber: string;
     bkashQrCode: string;
     paymentInstructions: string;
@@ -22,6 +24,8 @@ interface SettingsFormProps {
     heroNotice: string;
     coverageArea: string;
     packagesJson: string;
+    whyUsJson: string;
+    ftpServersJson: string;
   };
 }
 
@@ -59,9 +63,9 @@ export function SettingsForm({ initialSettings }: SettingsFormProps) {
       {/* Settings Form */}
       <Card>
         <CardHeader>
-          <CardTitle className="text-base">ISP & Payment Information</CardTitle>
+          <CardTitle className="text-base">ISP & Website Information</CardTitle>
           <CardDescription>
-            These details are rendered live in the customer portal when subscribers pay their bills.
+            Configure all content rendered live on the main Netcafe BD website and customer portal.
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -89,6 +93,20 @@ export function SettingsForm({ initialSettings }: SettingsFormProps) {
                 required
               />
               <Input
+                label="Support Email"
+                value={form.email}
+                onChange={(e) => setForm({ ...form, email: e.target.value })}
+              />
+            </div>
+
+            <Input
+              label="Office Address"
+              value={form.officeAddress}
+              onChange={(e) => setForm({ ...form, officeAddress: e.target.value })}
+            />
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <Input
                 label="ISP bKash Number (Send Money)"
                 value={form.bkashNumber}
                 onChange={(e) => setForm({ ...form, bkashNumber: e.target.value })}
@@ -110,7 +128,7 @@ export function SettingsForm({ initialSettings }: SettingsFormProps) {
               value={form.paymentInstructions}
               onChange={(e) => setForm({ ...form, paymentInstructions: e.target.value })}
               helperText="Step-by-step guidance shown on the customer's Pay Bill page."
-              rows={4}
+              rows={3}
               required
             />
 
@@ -152,7 +170,23 @@ export function SettingsForm({ initialSettings }: SettingsFormProps) {
                   value={form.packagesJson}
                   onChange={(e) => setForm({ ...form, packagesJson: e.target.value })}
                   helperText="JSON array for ISP package names, speeds, and monthly prices."
-                  rows={4}
+                  rows={3}
+                />
+
+                <Textarea
+                  label="Why Choose Us Features (JSON)"
+                  value={form.whyUsJson}
+                  onChange={(e) => setForm({ ...form, whyUsJson: e.target.value })}
+                  helperText="JSON array for Why Choose Us section cards."
+                  rows={3}
+                />
+
+                <Textarea
+                  label="FTP & Media Servers (JSON)"
+                  value={form.ftpServersJson}
+                  onChange={(e) => setForm({ ...form, ftpServersJson: e.target.value })}
+                  helperText="JSON array for FTP servers and Live TV links."
+                  rows={3}
                 />
               </div>
             </div>
