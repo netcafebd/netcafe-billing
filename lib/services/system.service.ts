@@ -18,11 +18,21 @@ export interface SystemProcessInfo {
   totalProcesses: number;
   totalThreads: number;
   processes: ProcessItem[];
+  autoKilledPids?: string[];
   error?: string;
 }
 
-export function getSystemProcessInfo(): SystemProcessInfo {
+export function getSystemProcessInfo(autoClean: boolean = true): SystemProcessInfo {
   const mem = process.memoryUsage();
+  let autoKilledPids: string[] = [];
+
+  if (autoClean && process.platform === "linux") {
+    try {
+      const cleanResult = killZombieProcesses();
+      autoKilledPids = cleanResult.killedPids;
+    } catch (_) {}
+  }
+
   const info: SystemProcessInfo = {
     platform: process.platform,
     nodeVersion: process.version,
@@ -33,6 +43,7 @@ export function getSystemProcessInfo(): SystemProcessInfo {
     totalProcesses: 1,
     totalThreads: 1,
     processes: [],
+    autoKilledPids: autoKilledPids.length > 0 ? autoKilledPids : undefined,
   };
 
   if (process.platform === "linux") {

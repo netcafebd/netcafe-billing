@@ -10,6 +10,7 @@ import {
   CreditCard,
   BarChart3,
   Settings,
+  Server,
   LogOut,
   Wifi,
   Menu,
@@ -24,6 +25,7 @@ const navigation = [
   { name: "Bills", href: "/admin/bills", icon: Receipt },
   { name: "Payments", href: "/admin/payments", icon: CreditCard },
   { name: "Reports", href: "/admin/reports", icon: BarChart3 },
+  { name: "Server Monitor", href: "/admin/server-monitor", icon: Server },
   { name: "ISP Settings", href: "/admin/settings", icon: Settings },
 ];
 

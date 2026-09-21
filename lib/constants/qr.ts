@@ -8,7 +8,7 @@ export function isDefaultOrMockQr(qr: string | null | undefined): boolean {
 }
 
 export function getEffectiveBkashQr(qr: string | null | undefined): string {
-  if (isDefaultOrMockQr(qr)) {
+  if (!qr || isDefaultOrMockQr(qr)) {
     return DEFAULT_BKASH_QR_IMAGE;
   }
   return qr;
