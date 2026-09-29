@@ -60,5 +60,6 @@ jobs:
             **/.git*
             **/.git*/**
             .env
-            .env.production
-            .env.local
+            .env.*
+            node_modules/**
+            **/node_modules/**
