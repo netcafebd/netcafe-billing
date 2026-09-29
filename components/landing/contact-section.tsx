@@ -3,7 +3,7 @@
 import React, { useState } from "react";
 import { useLanguage } from "./language-context";
 import { submitContactMessageAction } from "@/app/actions/inquiries.actions";
-import { MapPin, PhoneCall, Mail, Send, CheckCircle2, Headphones, AlertCircle, Loader2, MessageCircle } from "lucide-react";
+import { MapPin, PhoneCall, Mail, Send, CheckCircle2, Headphones, AlertCircle, Loader2, MessageCircle, Clock } from "lucide-react";
 
 // Unicode Surrogate Pairs for 100% reliable WhatsApp Emojis across all build tools & OS
 const EMOJI = {
@@ -102,37 +102,93 @@ NETCAFE Helpdesk System`;
               </p>
             </div>
 
-            <div className="space-y-4">
-              <div className="flex items-start gap-4 p-4 rounded-2xl bg-slate-900/80 border border-slate-800">
-                <MapPin className="w-6 h-6 text-orange-400 shrink-0 mt-1" />
-                <div>
-                  <h4 className="text-sm font-bold text-white">{t({ bn: "প্রধান কার্যালয় ও সাপোর্ট সেন্টার", en: "Corporate Office & Support Center" })}</h4>
-                  <p className="text-xs text-slate-400 mt-0.5 whitespace-pre-line">
-                    {officeAddress || "হাউজ #১২, রোড #০৪, ব্লক #বি, ঢাকা-১২১৬, বাংলাদেশ"}
-                  </p>
-                </div>
-              </div>
+            {(() => {
+              interface ContactCardItem {
+                icon?: "map" | "phone" | "mail" | "clock" | string;
+                title: string;
+                details: string;
+              }
 
-              <div className="flex items-start gap-4 p-4 rounded-2xl bg-slate-900/80 border border-slate-800">
-                <PhoneCall className="w-6 h-6 text-indigo-400 shrink-0 mt-1" />
-                <div>
-                  <h4 className="text-sm font-bold text-white">{t({ bn: "হটলাইন ও হেল্পলাইন নম্বর", en: "Hotline & Helpline Numbers" })}</h4>
-                  <p className="text-xs text-slate-400 mt-0.5">
-                    হটলাইন: <span className="font-bold text-orange-400">{hotline || "১৬২৩৪"}</span> (২৪ ঘণ্টা খোলা) | হেল্পলাইন: {supportPhone || "+880 1622280960"}
-                  </p>
-                </div>
-              </div>
+              let customCards: ContactCardItem[] | null = null;
+              if (officeAddress && typeof officeAddress === "string" && officeAddress.trim().startsWith("[")) {
+                try {
+                  const parsed = JSON.parse(officeAddress.trim());
+                  if (Array.isArray(parsed) && parsed.length > 0) {
+                    customCards = parsed;
+                  }
+                } catch (e) {}
+              }
 
-              <div className="flex items-start gap-4 p-4 rounded-2xl bg-slate-900/80 border border-slate-800">
-                <Mail className="w-6 h-6 text-emerald-400 shrink-0 mt-1" />
-                <div>
-                  <h4 className="text-sm font-bold text-white">{t({ bn: "অফিসিয়াল ইমেইল", en: "Official Emails" })}</h4>
-                  <p className="text-xs text-slate-400 mt-0.5">
-                    {email || "support@netcafe-bd.com"}
-                  </p>
+              if (customCards && customCards.length > 0) {
+                return (
+                  <div className="space-y-4">
+                    {customCards.map((card, idx) => {
+                      let IconComponent = MapPin;
+                      let iconColor = "text-orange-400";
+                      const tLower = (card.title || "").toLowerCase();
+                      const iLower = (card.icon || "").toLowerCase();
+
+                      if (iLower === "phone" || tLower.includes("phone") || tLower.includes("hotline") || tLower.includes("ফোন") || tLower.includes("হটলাইন")) {
+                        IconComponent = PhoneCall;
+                        iconColor = "text-indigo-400";
+                      } else if (iLower === "mail" || iLower === "email" || tLower.includes("mail") || tLower.includes("ইমেইল")) {
+                        IconComponent = Mail;
+                        iconColor = "text-emerald-400";
+                      } else if (iLower === "clock" || tLower.includes("hour") || tLower.includes("সময়")) {
+                        IconComponent = Clock;
+                        iconColor = "text-amber-400";
+                      }
+
+                      return (
+                        <div key={idx} className="flex items-start gap-4 p-4 rounded-2xl bg-slate-900/80 border border-slate-800">
+                          <IconComponent className={`w-6 h-6 ${iconColor} shrink-0 mt-1`} />
+                          <div>
+                            <h4 className="text-sm font-bold text-white">{card.title}</h4>
+                            <p className="text-xs text-slate-400 mt-0.5 whitespace-pre-line leading-relaxed">
+                              {card.details}
+                            </p>
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                );
+              }
+
+              return (
+                <div className="space-y-4">
+                  <div className="flex items-start gap-4 p-4 rounded-2xl bg-slate-900/80 border border-slate-800">
+                    <MapPin className="w-6 h-6 text-orange-400 shrink-0 mt-1" />
+                    <div>
+                      <h4 className="text-sm font-bold text-white">{t({ bn: "প্রধান কার্যালয় ও সাপোর্ট সেন্টার", en: "Corporate Office & Support Center" })}</h4>
+                      <p className="text-xs text-slate-400 mt-0.5 whitespace-pre-line leading-relaxed">
+                        {officeAddress || "হাউজ #১২, রোড #০৪, ব্লক #বি, ঢাকা-১২১৬, বাংলাদেশ"}
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="flex items-start gap-4 p-4 rounded-2xl bg-slate-900/80 border border-slate-800">
+                    <PhoneCall className="w-6 h-6 text-indigo-400 shrink-0 mt-1" />
+                    <div>
+                      <h4 className="text-sm font-bold text-white">{t({ bn: "হটলাইন ও হেল্পলাইন নম্বর", en: "Hotline & Helpline Numbers" })}</h4>
+                      <p className="text-xs text-slate-400 mt-0.5 leading-relaxed">
+                        হটলাইন: <span className="font-bold text-orange-400">{hotline || "১৬২৩৪"}</span> (২৪ ঘণ্টা খোলা) | হেল্পলাইন: {supportPhone || "+880 1622280960"}
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="flex items-start gap-4 p-4 rounded-2xl bg-slate-900/80 border border-slate-800">
+                    <Mail className="w-6 h-6 text-emerald-400 shrink-0 mt-1" />
+                    <div>
+                      <h4 className="text-sm font-bold text-white">{t({ bn: "অফিসিয়াল ইমেইল", en: "Official Emails" })}</h4>
+                      <p className="text-xs text-slate-400 mt-0.5 leading-relaxed">
+                        {email || "support@netcafe-bd.com | billing@netcafe-bd.com"}
+                      </p>
+                    </div>
+                  </div>
                 </div>
-              </div>
-            </div>
+              );
+            })()}
           </div>
 
           <div className="p-8 rounded-3xl bg-slate-900/90 border border-slate-800 space-y-4 shadow-2xl">

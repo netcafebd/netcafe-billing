@@ -124,10 +124,12 @@ export function SettingsForm({ initialSettings }: SettingsFormProps) {
               />
             </div>
 
-            <Input
-              label="Office Address"
+            <Textarea
+              label="Helpdesk Cards & Office Address (JSON or Plain Address)"
               value={form.officeAddress}
               onChange={(e) => setForm({ ...form, officeAddress: e.target.value })}
+              helperText="Enter your plain office address OR a JSON array to customize all contact cards (Title, Address/Details, Icon: map, phone, mail)."
+              rows={3}
             />
 
             <Textarea
