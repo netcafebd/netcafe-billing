@@ -15,13 +15,19 @@ export async function GET() {
       NODE_ENV: process.env.NODE_ENV,
       DATABASE_URL_SET: !!process.env.DATABASE_URL,
       AUTH_SECRET_SET: !!process.env.AUTH_SECRET,
+      PRISMA_ENGINE: process.env.PRISMA_QUERY_ENGINE_LIBRARY || "default",
     },
-    system: getSystemProcessInfo(),
     tables: {},
     debugLog: null,
   };
 
-  // Test individual tables to find exact failure
+  try {
+    result.system = getSystemProcessInfo(false);
+  } catch (err: any) {
+    result.system = { error: err?.message };
+  }
+
+  // Test individual tables
   const tests = [
     { name: "users", fn: () => prisma.user.count() },
     { name: "customers", fn: () => prisma.customer.count() },
@@ -45,12 +51,15 @@ export async function GET() {
     }
   }
 
-  const logPath = path.join(process.cwd(), "debug.log");
-  if (fs.existsSync(logPath)) {
-    try {
-      const lines = fs.readFileSync(logPath, "utf8").split("\n").filter(Boolean);
-      result.debugLog = lines.slice(-20).join("\n");
-    } catch {}
+  const logFiles = ["debug.log", "passenger.log", "stderr.log"];
+  for (const lFile of logFiles) {
+    const lPath = path.join(process.cwd(), lFile);
+    if (fs.existsSync(lPath)) {
+      try {
+        const lines = fs.readFileSync(lPath, "utf8").split("\n").filter(Boolean);
+        result[lFile] = lines.slice(-25).join("\n");
+      } catch {}
+    }
   }
 
   return NextResponse.json(result, { status: 200 });

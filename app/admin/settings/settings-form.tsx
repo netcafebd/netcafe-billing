@@ -124,8 +124,6 @@ export function SettingsForm({ initialSettings }: SettingsFormProps) {
               />
             </div>
 
-
-
             <Textarea
               label="bKash QR Code (SVG or Data URL)"
               value={form.bkashQrCode}
@@ -226,7 +224,7 @@ export function SettingsForm({ initialSettings }: SettingsFormProps) {
 
                 <Textarea
                   label="Helpdesk, Branches & Contact Cards (JSON)"
-                  value={form.officeAddress}
+                  value={form.officeAddress || ""}
                   onChange={(e) => setForm({ ...form, officeAddress: e.target.value })}
                   helperText="JSON array for the 3 Contact / Helpdesk cards shown on homepage (Office Address, Hotline & Support, Emails). You can also enter a plain text address."
                   rows={4}

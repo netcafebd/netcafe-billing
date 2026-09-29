@@ -59,6 +59,7 @@ if (fs.existsSync(standaloneDir)) {
   ];
   const engineSourceDirs = [
     path.join(rootDir, "node_modules", "prisma"),
+    path.join(rootDir, "node_modules", "@prisma", "engines"),
     path.join(rootDir, "node_modules", ".prisma", "client"),
   ];
 

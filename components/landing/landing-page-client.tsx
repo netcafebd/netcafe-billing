@@ -85,7 +85,10 @@ export function LandingPageClient({ settings, session }: LandingPageClientProps)
           <Features customWhyUsJson={settings?.whyUsJson} />
 
           {/* Customer Testimonials & Corporate Clients Showcase */}
-          <Testimonials />
+          <Testimonials
+            customTestimonialsJson={settings?.testimonialsJson}
+            customCorporateJson={settings?.corporatePartnersJson}
+          />
 
           {/* Contact Us Section */}
           <ContactSection
@@ -176,17 +179,17 @@ export function LandingPageClient({ settings, session }: LandingPageClientProps)
                   <MapPin className="w-4 h-4 text-amber-400 shrink-0 mt-0.5" />
                   <span>
                     {(() => {
-                      if (!settings?.officeAddress) return "হাউজ #১২, রোড #০৪, ব্লক #বি, ঢাকা-১২১৬, বাংলাদেশ";
-                      if (settings.officeAddress.trim().startsWith("[")) {
+                      const raw = settings?.officeAddress || "লেভেল-৭, টাওয়ার-এ, গুলশান সাউথ এভিনিউ, গুলশান-২, ঢাকা-১২১২";
+                      if (raw.trim().startsWith("[")) {
                         try {
-                          const parsed = JSON.parse(settings.officeAddress.trim());
+                          const parsed = JSON.parse(raw);
                           if (Array.isArray(parsed) && parsed.length > 0) {
-                            const found = parsed.find((p: any) => p.icon === "map" || p.type === "office") || parsed[0];
-                            return found?.details || found?.address || settings.officeAddress;
+                            const mapItem = parsed.find((c: any) => c.icon === "map") || parsed[0];
+                            return mapItem.details || raw;
                           }
-                        } catch (e) {}
+                        } catch (_) {}
                       }
-                      return settings.officeAddress;
+                      return raw;
                     })()}
                   </span>
                 </li>
