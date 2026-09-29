@@ -1,4 +1,5 @@
 import React from "react";
+import { prisma } from "@/lib/db/prisma";
 import { getSession } from "@/lib/auth/session";
 import { LandingPageClient } from "@/components/landing/landing-page-client";
 
@@ -6,12 +7,8 @@ export const dynamic = "force-dynamic";
 
 export default async function HomePage() {
   try {
-    let session = null;
-    try {
-      session = await getSession();
-    } catch (_) {}
+    const session = await getSession();
 
-    const { prisma } = await import("@/lib/db/prisma");
     let settings = await prisma.iSPSettings.findFirst();
     if (!settings) {
       settings = await prisma.iSPSettings.create({

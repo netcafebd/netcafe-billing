@@ -83,6 +83,22 @@ if (fs.existsSync(standaloneDir)) {
     }
   }
 
+  // 4b. Copy generated Prisma Client into .next/standalone/prisma/client
+  // because FTP excludes node_modules/**, this ensures the generated client is transferred!
+  const dotPrismaSrc = path.join(rootDir, "node_modules", ".prisma", "client");
+  const dotPrismaDest = path.join(standaloneDir, "prisma", "client");
+  if (fs.existsSync(dotPrismaSrc)) {
+    copyDirRecursive(dotPrismaSrc, dotPrismaDest);
+    console.log("✔ Copied node_modules/.prisma/client -> .next/standalone/prisma/client");
+  }
+
+  const atPrismaSrc = path.join(rootDir, "node_modules", "@prisma", "client");
+  const atPrismaDest = path.join(standaloneDir, "prisma", "at-client");
+  if (fs.existsSync(atPrismaSrc)) {
+    copyDirRecursive(atPrismaSrc, atPrismaDest);
+    console.log("✔ Copied node_modules/@prisma/client -> .next/standalone/prisma/at-client");
+  }
+
   // 5. Copy standalone node_modules to root node_modules so root require("next") works natively
   const standaloneNodeModules = path.join(standaloneDir, "node_modules");
   const rootNodeModules = path.join(rootDir, "node_modules");
@@ -108,6 +124,35 @@ if (!module.paths.includes(_path.join(__dirname, "node_modules"))) {
   module.paths.unshift(_path.join(__dirname, "node_modules"));
 }
 
+// Auto-sync uploaded prisma/client -> node_modules/.prisma/client on server boot
+try {
+  const _genPrisma = _path.join(__dirname, "prisma", "client");
+  const _targetDotPrisma = _path.join(__dirname, "node_modules", ".prisma", "client");
+  if (_fs.existsSync(_genPrisma)) {
+    _fs.mkdirSync(_targetDotPrisma, { recursive: true });
+    for (const f of _fs.readdirSync(_genPrisma)) {
+      const src = _path.join(_genPrisma, f);
+      if (_fs.statSync(src).isFile()) {
+        _fs.copyFileSync(src, _path.join(_targetDotPrisma, f));
+      }
+    }
+  }
+} catch (e) {}
+
+try {
+  const _genAtPrisma = _path.join(__dirname, "prisma", "at-client");
+  const _targetAtPrisma = _path.join(__dirname, "node_modules", "@prisma", "client");
+  if (_fs.existsSync(_genAtPrisma)) {
+    _fs.mkdirSync(_targetAtPrisma, { recursive: true });
+    for (const f of _fs.readdirSync(_genAtPrisma)) {
+      const src = _path.join(_genAtPrisma, f);
+      if (_fs.statSync(src).isFile()) {
+        _fs.copyFileSync(src, _path.join(_targetAtPrisma, f));
+      }
+    }
+  }
+} catch (e) {}
+
 const _origErr = console.error;
 console.error = function (...args) {
   try {
@@ -120,7 +165,7 @@ console.error = function (...args) {
     // Clean any prior injected block
     const cleanContent = content.replace(/\/\/ Injected thread pool constraints[\s\S]*?_origErr\.apply\(console, args\);\s*};\n?/g, "");
     fs.writeFileSync(standaloneServerJs, threadLimitCode + cleanContent, "utf8");
-    console.log("✔ Injected safe thread constraints and module resolver into .next/standalone/server.js");
+    console.log("✔ Injected safe thread constraints, Prisma client sync, and module resolver into .next/standalone/server.js");
   }
 
   console.log("✔ Standalone bundle is ready for cPanel Passenger deployment!");
