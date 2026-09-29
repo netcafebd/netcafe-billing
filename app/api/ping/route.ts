@@ -4,7 +4,16 @@ import path from "path";
 
 export const dynamic = "force-dynamic";
 
-export async function GET() {
+export async function GET(request: Request) {
+  const { searchParams } = new URL(request.url);
+  const doRestart = searchParams.get("restart") === "1" || searchParams.get("restart") === "true";
+
+  if (doRestart) {
+    setTimeout(() => {
+      process.exit(0);
+    }, 200);
+  }
+
   const cwd = process.cwd();
   let rootFiles: string[] = [];
   let prismaFiles: string[] = [];
@@ -38,12 +47,32 @@ export async function GET() {
     nodeModulesPrismaFiles = [e.message];
   }
 
+  let dbCheck: any = null;
+  try {
+    const { prisma } = await import("@/lib/db/prisma");
+    const [customerCount, settings] = await Promise.all([
+      prisma.customer.count(),
+      prisma.iSPSettings.findFirst({ select: { ispName: true, hotline: true, officeAddress: true } }),
+    ]);
+    dbCheck = {
+      status: "connected",
+      customerCount,
+      settingsFound: !!settings,
+      ispName: settings?.ispName,
+      officeAddressLength: settings?.officeAddress?.length || 0,
+    };
+  } catch (err: any) {
+    dbCheck = { status: "error", message: err?.message, stack: err?.stack };
+  }
+
   return NextResponse.json({
     status: "ok",
     cwd,
     platform: process.platform,
     envDatabaseUrl: !!process.env.DATABASE_URL,
     prismaQueryEngineEnv: process.env.PRISMA_QUERY_ENGINE_LIBRARY || "none",
+    restarting: doRestart,
+    dbCheck,
     rootFiles,
     prismaFiles,
     nodeModulesPrismaFiles,
