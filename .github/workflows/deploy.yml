@@ -16,12 +16,6 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 20
 
-    env:
-      NODE_ENV: production
-      DATABASE_URL: "postgresql://postgres:dummy@localhost:5432/dummy?schema=public"
-      AUTH_SECRET: "dummy-secret-key-for-building-standalone-bundle-32ch"
-      NEXT_TELEMETRY_DISABLED: "1"
-
     steps:
       - name: 1. Checkout repository
         uses: actions/checkout@v4
@@ -33,13 +27,20 @@ jobs:
           cache: "npm"
 
       - name: 3. Install dependencies
-        run: npm install --prefer-offline --no-audit
+        run: npm install --include=dev --prefer-offline --no-audit
 
       - name: 4. Generate Prisma Client
         run: npx prisma generate
+        env:
+          DATABASE_URL: "postgresql://postgres:dummy@localhost:5432/dummy?schema=public"
 
       - name: 5. Build Next.js Production App
         run: npm run build
+        env:
+          NODE_ENV: production
+          DATABASE_URL: "postgresql://postgres:dummy@localhost:5432/dummy?schema=public"
+          AUTH_SECRET: "dummy-secret-key-for-building-standalone-bundle-32ch"
+          NEXT_TELEMETRY_DISABLED: "1"
 
       - name: 6. Prepare Passenger Restart Trigger
         run: |
