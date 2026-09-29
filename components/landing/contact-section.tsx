@@ -106,9 +106,9 @@ NETCAFE Helpdesk System`;
               <div className="flex items-start gap-4 p-4 rounded-2xl bg-slate-900/80 border border-slate-800">
                 <MapPin className="w-6 h-6 text-orange-400 shrink-0 mt-1" />
                 <div>
-                  <h4 className="text-sm font-bold text-white">{t({ bn: "প্রধান কার্যালয় (গুলশান হাব)", en: "Corporate Office (Gulshan Hub)" })}</h4>
-                  <p className="text-xs text-slate-400 mt-0.5">
-                    {officeAddress || "লেভেল-৭, টাওয়ার-এ, গুলশান সাউথ এভিনিউ, গুলশান-২, ঢাকা-১২১২"}
+                  <h4 className="text-sm font-bold text-white">{t({ bn: "প্রধান কার্যালয় ও সাপোর্ট সেন্টার", en: "Corporate Office & Support Center" })}</h4>
+                  <p className="text-xs text-slate-400 mt-0.5 whitespace-pre-line">
+                    {officeAddress || "হাউজ #১২, রোড #০৪, ব্লক #বি, ঢাকা-১২১৬, বাংলাদেশ"}
                   </p>
                 </div>
               </div>
@@ -116,9 +116,9 @@ NETCAFE Helpdesk System`;
               <div className="flex items-start gap-4 p-4 rounded-2xl bg-slate-900/80 border border-slate-800">
                 <PhoneCall className="w-6 h-6 text-indigo-400 shrink-0 mt-1" />
                 <div>
-                  <h4 className="text-sm font-bold text-white">{t({ bn: "হটলাইন ও ফোন নম্বর", en: "Hotline & Support Numbers" })}</h4>
+                  <h4 className="text-sm font-bold text-white">{t({ bn: "হটলাইন ও হেল্পলাইন নম্বর", en: "Hotline & Helpline Numbers" })}</h4>
                   <p className="text-xs text-slate-400 mt-0.5">
-                    হটলাইন: <span className="font-bold text-orange-400">{hotline || "১৬২৩৪"}</span> (২৪ ঘণ্টা খোলা) | হেল্পলাইন: {supportPhone || "+880 9611 800 800"}
+                    হটলাইন: <span className="font-bold text-orange-400">{hotline || "১৬২৩৪"}</span> (২৪ ঘণ্টা খোলা) | হেল্পলাইন: {supportPhone || "+880 1622280960"}
                   </p>
                 </div>
               </div>
@@ -126,9 +126,9 @@ NETCAFE Helpdesk System`;
               <div className="flex items-start gap-4 p-4 rounded-2xl bg-slate-900/80 border border-slate-800">
                 <Mail className="w-6 h-6 text-emerald-400 shrink-0 mt-1" />
                 <div>
-                  <h4 className="text-sm font-bold text-white">{t({ bn: "ইমেইল অ্যাড্রেস", en: "Official Emails" })}</h4>
+                  <h4 className="text-sm font-bold text-white">{t({ bn: "অফিসিয়াল ইমেইল", en: "Official Emails" })}</h4>
                   <p className="text-xs text-slate-400 mt-0.5">
-                    {email || "support@netcafebd.com"} | billing@netcafebd.com
+                    {email || "support@netcafe-bd.com"}
                   </p>
                 </div>
               </div>
