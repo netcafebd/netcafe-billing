@@ -124,13 +124,7 @@ export function SettingsForm({ initialSettings }: SettingsFormProps) {
               />
             </div>
 
-            <Textarea
-              label="Helpdesk Cards & Office Address (JSON or Plain Address)"
-              value={form.officeAddress}
-              onChange={(e) => setForm({ ...form, officeAddress: e.target.value })}
-              helperText="Enter your plain office address OR a JSON array to customize all contact cards (Title, Address/Details, Icon: map, phone, mail)."
-              rows={3}
-            />
+
 
             <Textarea
               label="bKash QR Code (SVG or Data URL)"
@@ -228,6 +222,15 @@ export function SettingsForm({ initialSettings }: SettingsFormProps) {
                   onChange={(e) => setForm({ ...form, corporatePartnersJson: e.target.value })}
                   helperText="JSON array of partner brand names."
                   rows={2}
+                />
+
+                <Textarea
+                  label="Helpdesk, Branches & Contact Cards (JSON)"
+                  value={form.officeAddress}
+                  onChange={(e) => setForm({ ...form, officeAddress: e.target.value })}
+                  helperText="JSON array for the 3 Contact / Helpdesk cards shown on homepage (Office Address, Hotline & Support, Emails). You can also enter a plain text address."
+                  rows={4}
+                  placeholder='[&#10;  { "icon": "map", "title": "Corporate Office", "details": "হাউজ #১২, ঢাকা" },&#10;  { "icon": "phone", "title": "Hotline", "details": "01622280960" }&#10;]'
                 />
 
                 <Input
