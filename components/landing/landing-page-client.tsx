@@ -75,6 +75,7 @@ export function LandingPageClient({ settings, session }: LandingPageClientProps)
           <CoverageChecker
             onOpenOrderWithArea={(area) => handleOpenOrder(undefined, area)}
             customCoverageText={settings?.coverageArea}
+            customCoverageJson={settings?.coverageDataJson}
             hotline={settings?.hotline}
           />
 
@@ -85,7 +86,10 @@ export function LandingPageClient({ settings, session }: LandingPageClientProps)
           <Features customWhyUsJson={settings?.whyUsJson} />
 
           {/* Customer Testimonials & Corporate Clients Showcase */}
-          <Testimonials />
+          <Testimonials
+            customTestimonialsJson={settings?.testimonialsJson}
+            customCorporateJson={settings?.corporatePartnersJson}
+          />
 
           {/* Contact Us Section */}
           <ContactSection
@@ -120,14 +124,16 @@ export function LandingPageClient({ settings, session }: LandingPageClientProps)
               </div>
 
               <p className="text-slate-400 text-xs leading-relaxed max-w-sm">
-                NETCAFE দিচ্ছে আল্ট্রা-হাই স্পিড অপটিক্যাল ফাইবার ইন্টারনেট, BDIX ও লোকাল ক্যাশ সার্ভার এবং নিরবচ্ছিন্ন হোম ও এন্টারপ্রাইজ কানেক্টিভিটি।
+                {settings?.footerAboutText || "NETCAFE দিচ্ছে আল্ট্রা-হাই স্পিড অপটিক্যাল ফাইবার ইন্টারনেট, BDIX ও লোকাল ক্যাশ সার্ভার এবং নিরবচ্ছিন্ন হোম ও এন্টারপ্রাইজ কানেক্টিভিটি।"}
               </p>
 
               <div className="p-3 rounded-xl bg-slate-900/80 border border-slate-800 space-y-1 text-slate-300">
                 <p className="font-bold text-orange-400 flex items-center gap-1.5 text-xs">
                   <ShieldCheck className="w-4 h-4 text-emerald-400" /> BTRC লাইসেন্সপ্রাপ্ত আইএসপি
                 </p>
-                <p className="text-[11px] text-slate-400">লাইসেন্স নং: BTRC/ISP/NAT-2024/098</p>
+                <p className="text-[11px] text-slate-400">
+                  {settings?.btrcLicenseText || "লাইসেন্স নং: BTRC/ISP/NAT-2024/098"}
+                </p>
               </div>
             </div>
 

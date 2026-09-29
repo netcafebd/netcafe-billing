@@ -27,6 +27,11 @@ interface SettingsFormProps {
     packagesJson: string;
     whyUsJson: string;
     ftpServersJson: string;
+    coverageDataJson?: string;
+    testimonialsJson?: string;
+    corporatePartnersJson?: string;
+    footerAboutText?: string;
+    btrcLicenseText?: string;
   };
 }
 
@@ -197,6 +202,45 @@ export function SettingsForm({ initialSettings }: SettingsFormProps) {
                   onChange={(e) => setForm({ ...form, ftpServersJson: e.target.value })}
                   helperText="JSON array for FTP servers and Live TV links."
                   rows={3}
+                />
+
+                <Textarea
+                  label="Coverage Areas, Districts & Thanas (JSON)"
+                  value={form.coverageDataJson || ""}
+                  onChange={(e) => setForm({ ...form, coverageDataJson: e.target.value })}
+                  helperText="JSON array for Divisions, Districts, and Thanas/Areas shown on homepage."
+                  rows={4}
+                />
+
+                <Textarea
+                  label="Customer Reviews & Testimonials (JSON)"
+                  value={form.testimonialsJson || ""}
+                  onChange={(e) => setForm({ ...form, testimonialsJson: e.target.value })}
+                  helperText="JSON array for client reviews (name, role, quote, rating)."
+                  rows={3}
+                />
+
+                <Textarea
+                  label="Corporate Partners & Clients (JSON)"
+                  value={form.corporatePartnersJson || ""}
+                  onChange={(e) => setForm({ ...form, corporatePartnersJson: e.target.value })}
+                  helperText="JSON array of partner brand names."
+                  rows={2}
+                />
+
+                <Input
+                  label="BTRC License Text / Badge"
+                  value={form.btrcLicenseText || ""}
+                  onChange={(e) => setForm({ ...form, btrcLicenseText: e.target.value })}
+                  helperText="Displayed in the footer trust badge."
+                />
+
+                <Textarea
+                  label="Footer About Bio"
+                  value={form.footerAboutText || ""}
+                  onChange={(e) => setForm({ ...form, footerAboutText: e.target.value })}
+                  helperText="Short ISP introduction paragraph shown in footer."
+                  rows={2}
                 />
               </div>
             </div>

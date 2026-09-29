@@ -92,7 +92,7 @@ export function Features({ customWhyUsJson }: FeaturesProps) {
             <span>{t({ bn: "আমাদের প্রযুক্তি ও প্রতিশ্রুতি", en: "Our Technology & Promise" })}</span>
           </div>
 
-          <h2 className="text-3xl sm:text-4xl font-extrabold text-white tracking-tight">
+          <h2 className="text-3xl sm:text-4xl font-extrabold text-white leading-snug sm:leading-normal">
             {t({
               bn: "কেন NETCAFE ব্রডব্যান্ড নির্বাচন করবেন?",
               en: "Why Choose NETCAFE Broadband?",

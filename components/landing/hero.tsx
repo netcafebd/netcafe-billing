@@ -68,11 +68,11 @@ export function Hero({ onOpenOrder, heroNotice, heroTitle, heroSubtitle, ispName
               </span>
             </div>
 
-            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-black tracking-tight text-white leading-[1.15]">
-              {mainTitle}{" "}
+            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-black text-white leading-[1.3] sm:leading-[1.35] lg:leading-[1.3] pb-1">
+              <span className="block">{mainTitle}</span>
               {highlightTitle && (
-                <span className="text-transparent bg-clip-text bg-gradient-to-r from-orange-400 via-amber-300 to-indigo-400">
-                  {highlightTitle}
+                <span className="block mt-2 sm:mt-3 text-transparent bg-clip-text bg-gradient-to-r from-orange-400 via-amber-300 to-indigo-400 pb-1">
+                  {highlightTitle.trim()}
                 </span>
               )}
             </h1>

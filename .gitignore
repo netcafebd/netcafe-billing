@@ -38,3 +38,14 @@ tmp/
 .DS_Store
 Thumbs.db
 
+# Archives and deploy helper artifacts
+*.zip
+extract.php
+scripts/test.js
+scripts/print-db.js
+scripts/seed-local-settings.js
+scripts/update-admin-ui.js
+scripts/update-local-db.js
+scripts/verify-settings.js
+scripts/apply-schema-and-db.js
+

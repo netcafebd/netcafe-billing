@@ -37,7 +37,7 @@ export function BillSearchWidget() {
           <span>ইনস্ট্যান্ট বিল পেমেন্ট গেটওয়ে</span>
         </div>
 
-        <h2 className="text-3xl sm:text-4xl font-extrabold text-white tracking-tight">
+        <h2 className="text-3xl sm:text-4xl font-extrabold text-white leading-snug sm:leading-normal">
           ঘরে বসেই সহজে ও নিরাপদে আপনার বিল পরিশোধ করুন
         </h2>
 

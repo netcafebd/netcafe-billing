@@ -96,7 +96,7 @@ export function ValueAddedServices({ customFtpJson }: ValueAddedServicesProps) {
             <span>{t({ bn: "ভ্যালু অ্যাডেড সার্ভিসেস (VAS)", en: "Value Added Services (VAS)" })}</span>
           </div>
 
-          <h2 className="text-3xl sm:text-4xl font-extrabold text-white tracking-tight">
+          <h2 className="text-3xl sm:text-4xl font-extrabold text-white leading-snug sm:leading-normal">
             {t({
               bn: "ডিজিটাল বিনোদন ও মিডিয়া সার্ভার হাব",
               en: "Digital Entertainment & Media Hub",

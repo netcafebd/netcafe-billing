@@ -49,19 +49,41 @@ const defaultCoverageData = [
 interface CoverageCheckerProps {
   onOpenOrderWithArea?: (areaName: string) => void;
   customCoverageText?: string;
+  customCoverageJson?: string | null;
   hotline?: string;
 }
 
-export function CoverageChecker({ onOpenOrderWithArea, customCoverageText, hotline }: CoverageCheckerProps) {
+export function CoverageChecker({ onOpenOrderWithArea, customCoverageText, customCoverageJson, hotline }: CoverageCheckerProps) {
   const { t } = useLanguage();
 
   const [selectedDivisionIndex, setSelectedDivisionIndex] = useState(0);
   const [selectedDistrictIndex, setSelectedDistrictIndex] = useState(0);
   const [selectedArea, setSelectedArea] = useState<any>(null);
 
-  const currentDivision = defaultCoverageData[selectedDivisionIndex];
-  const currentDistrict = currentDivision?.districts[selectedDistrictIndex];
-  const areas = currentDistrict?.areas || [];
+  const coverageData = React.useMemo(() => {
+    if (customCoverageJson) {
+      try {
+        const parsed = typeof customCoverageJson === "string" ? JSON.parse(customCoverageJson) : customCoverageJson;
+        if (Array.isArray(parsed) && parsed.length > 0) {
+          return parsed;
+        }
+      } catch (e) {
+        console.error("Invalid customCoverageJson", e);
+      }
+    }
+    return defaultCoverageData;
+  }, [customCoverageJson]);
+
+  const renderText = (val: any): string => {
+    if (!val) return "";
+    if (typeof val === "string") return val;
+    if (typeof val === "object" && (val.bn || val.en)) return t(val);
+    return String(val);
+  };
+
+  const currentDivision = coverageData[selectedDivisionIndex] || coverageData[0];
+  const currentDistrict = currentDivision?.districts?.[selectedDistrictIndex] || currentDivision?.districts?.[0];
+  const areas: any[] = currentDistrict?.areas || [];
 
   return (
     <section id="coverage" className="py-20 bg-slate-900/40 border-t border-slate-800/80 relative">
@@ -73,7 +95,7 @@ export function CoverageChecker({ onOpenOrderWithArea, customCoverageText, hotli
             <span>{t({ bn: "দেশব্যাপী অপটিক্যাল ফাইবার নেটওয়ার্ক", en: "Nationwide Optical Fiber Network" })}</span>
           </div>
 
-          <h2 className="text-3xl sm:text-4xl font-extrabold text-white tracking-tight">
+          <h2 className="text-3xl sm:text-4xl font-extrabold text-white leading-snug sm:leading-normal">
             {t({
               bn: "আপনার এলাকায় আমাদের কভারেজ যাচাই করুন",
               en: "Check Fiber Coverage in Your Area",
@@ -105,9 +127,9 @@ export function CoverageChecker({ onOpenOrderWithArea, customCoverageText, hotli
                 }}
                 className="w-full px-4 py-3 rounded-xl bg-slate-900 border border-slate-700 text-white text-sm focus:outline-none focus:border-indigo-500"
               >
-                {defaultCoverageData.map((div, idx) => (
+                {coverageData.map((div: any, idx: number) => (
                   <option key={idx} value={idx}>
-                    {t(div.division)}
+                    {renderText(div.division)}
                   </option>
                 ))}
               </select>
@@ -125,9 +147,9 @@ export function CoverageChecker({ onOpenOrderWithArea, customCoverageText, hotli
                 }}
                 className="w-full px-4 py-3 rounded-xl bg-slate-900 border border-slate-700 text-white text-sm focus:outline-none focus:border-indigo-500"
               >
-                {currentDivision?.districts.map((dist, idx) => (
+                {currentDivision?.districts?.map((dist: any, idx: number) => (
                   <option key={idx} value={idx}>
-                    {t(dist.name)}
+                    {renderText(dist.name)}
                   </option>
                 ))}
               </select>
@@ -140,8 +162,10 @@ export function CoverageChecker({ onOpenOrderWithArea, customCoverageText, hotli
             </label>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 max-h-64 overflow-y-auto pr-1">
-              {areas.map((area, idx) => {
-                const isSelected = selectedArea?.name?.en === area.name.en;
+              {areas.map((area: any, idx: number) => {
+                const areaName = renderText(area.name);
+                const selectedAreaName = selectedArea ? renderText(selectedArea.name) : "";
+                const isSelected = selectedAreaName === areaName;
                 return (
                   <button
                     key={idx}
@@ -155,7 +179,7 @@ export function CoverageChecker({ onOpenOrderWithArea, customCoverageText, hotli
                   >
                     <div className="flex items-center gap-2">
                       <MapPin className={`w-4 h-4 ${isSelected ? "text-orange-400" : "text-indigo-400"}`} />
-                      <span className="text-xs sm:text-sm font-medium">{t(area.name)}</span>
+                      <span className="text-xs sm:text-sm font-medium">{areaName}</span>
                     </div>
 
                     <span className="w-2 h-2 rounded-full bg-emerald-400" />
@@ -178,14 +202,14 @@ export function CoverageChecker({ onOpenOrderWithArea, customCoverageText, hotli
                   </span>
                 </div>
                 <h4 className="text-lg font-bold text-white">
-                  {t(selectedArea.name)} ({selectedArea.branch})
+                  {renderText(selectedArea.name)} {selectedArea.branch ? `(${selectedArea.branch})` : ""}
                 </h4>
               </div>
 
               <div className="flex items-center gap-3 w-full md:w-auto">
                 <button
                   type="button"
-                  onClick={() => onOpenOrderWithArea && onOpenOrderWithArea(t(selectedArea.name))}
+                  onClick={() => onOpenOrderWithArea && onOpenOrderWithArea(renderText(selectedArea.name))}
                   className="flex-1 md:flex-initial px-5 py-3 rounded-xl bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600 text-white font-bold text-xs sm:text-sm transition flex items-center justify-center gap-2"
                 >
                   <span>{t({ bn: "বুকিং করুন", en: "Book Now" })}</span>

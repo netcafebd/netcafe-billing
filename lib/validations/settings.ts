@@ -23,6 +23,11 @@ export const settingsUpdateSchema = z.object({
   packagesJson: z.string().optional().default(""),
   whyUsJson: z.string().optional().default(""),
   ftpServersJson: z.string().optional().default(""),
+  coverageDataJson: z.string().optional().default(""),
+  testimonialsJson: z.string().optional().default(""),
+  corporatePartnersJson: z.string().optional().default(""),
+  footerAboutText: z.string().optional().default(""),
+  btrcLicenseText: z.string().optional().default(""),
 });
 
 export type SettingsUpdateInput = z.infer<typeof settingsUpdateSchema>;

@@ -37,7 +37,7 @@ const testimonials = [
   },
 ];
 
-const corporatePartners = [
+const defaultCorporatePartners = [
   "TechVerse BD",
   "Prime IT Solutions",
   "Apex Global",
@@ -46,8 +46,48 @@ const corporatePartners = [
   "Star Logistics",
 ];
 
-export function Testimonials() {
+interface TestimonialsProps {
+  customTestimonialsJson?: string | null;
+  customCorporateJson?: string | null;
+}
+
+export function Testimonials({ customTestimonialsJson, customCorporateJson }: TestimonialsProps) {
   const { t } = useLanguage();
+
+  const testimonialList = React.useMemo(() => {
+    if (customTestimonialsJson) {
+      try {
+        const parsed = typeof customTestimonialsJson === "string" ? JSON.parse(customTestimonialsJson) : customTestimonialsJson;
+        if (Array.isArray(parsed) && parsed.length > 0) {
+          return parsed;
+        }
+      } catch (e) {
+        console.error("Invalid customTestimonialsJson", e);
+      }
+    }
+    return testimonials;
+  }, [customTestimonialsJson]);
+
+  const corporateList = React.useMemo(() => {
+    if (customCorporateJson) {
+      try {
+        const parsed = typeof customCorporateJson === "string" ? JSON.parse(customCorporateJson) : customCorporateJson;
+        if (Array.isArray(parsed) && parsed.length > 0) {
+          return parsed;
+        }
+      } catch (e) {
+        console.error("Invalid customCorporateJson", e);
+      }
+    }
+    return defaultCorporatePartners;
+  }, [customCorporateJson]);
+
+  const renderText = (val: any): string => {
+    if (!val) return "";
+    if (typeof val === "string") return val;
+    if (typeof val === "object" && (val.bn || val.en)) return t(val);
+    return String(val);
+  };
 
   return (
     <section className="py-20 bg-slate-950/80 border-t border-slate-800/80 relative">
@@ -59,7 +99,7 @@ export function Testimonials() {
             <span>{t({ bn: "গ্রাহকদের প্রতিক্রিয়া", en: "Customer Reviews" })}</span>
           </div>
 
-          <h2 className="text-3xl sm:text-4xl font-extrabold text-white tracking-tight">
+          <h2 className="text-3xl sm:text-4xl font-extrabold text-white leading-snug sm:leading-normal">
             {t({
               bn: "গ্রাহকদের সন্তুষ্টিই আমাদের শক্তি",
               en: "Customer Satisfaction Is Our Strength",
@@ -76,36 +116,39 @@ export function Testimonials() {
 
         {/* Testimonials Grid */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-20">
-          {testimonials.map((item, idx) => (
-            <div
-              key={idx}
-              className="p-7 rounded-3xl bg-slate-900/80 border border-slate-800 hover:border-indigo-500/40 transition duration-300 flex flex-col justify-between space-y-6 shadow-xl relative group"
-            >
-              <Quote className="w-8 h-8 text-indigo-500/20 group-hover:text-indigo-500/40 transition absolute top-6 right-6" />
+          {testimonialList.map((item: any, idx: number) => {
+            const avatar = item.avatar || (typeof item.name === "string" ? item.name.slice(0, 2) : "NC");
+            return (
+              <div
+                key={idx}
+                className="p-7 rounded-3xl bg-slate-900/80 border border-slate-800 hover:border-indigo-500/40 transition duration-300 flex flex-col justify-between space-y-6 shadow-xl relative group"
+              >
+                <Quote className="w-8 h-8 text-indigo-500/20 group-hover:text-indigo-500/40 transition absolute top-6 right-6" />
 
-              <div className="space-y-4">
-                <div className="flex items-center gap-1 text-amber-400">
-                  {[...Array(item.rating)].map((_, rIdx) => (
-                    <Star key={rIdx} className="w-4 h-4 fill-current" />
-                  ))}
+                <div className="space-y-4">
+                  <div className="flex items-center gap-1 text-amber-400">
+                    {[...Array(item.rating || 5)].map((_, rIdx) => (
+                      <Star key={rIdx} className="w-4 h-4 fill-current" />
+                    ))}
+                  </div>
+
+                  <p className="text-xs sm:text-sm text-slate-300 leading-relaxed italic">
+                    "{renderText(item.quote)}"
+                  </p>
                 </div>
 
-                <p className="text-xs sm:text-sm text-slate-300 leading-relaxed italic">
-                  "{t(item.quote)}"
-                </p>
+                <div className="flex items-center gap-3.5 pt-4 border-t border-slate-800">
+                  <div className="w-10 h-10 rounded-full bg-gradient-to-tr from-orange-500 to-indigo-600 font-bold text-white text-xs flex items-center justify-center shadow-md">
+                    {avatar}
+                  </div>
+                  <div>
+                    <h4 className="text-sm font-bold text-white">{renderText(item.name)}</h4>
+                    <p className="text-[11px] text-slate-400 mt-0.5">{renderText(item.role)}</p>
+                  </div>
+                </div>
               </div>
-
-              <div className="flex items-center gap-3.5 pt-4 border-t border-slate-800">
-                <div className="w-10 h-10 rounded-full bg-gradient-to-tr from-orange-500 to-indigo-600 font-bold text-white text-xs flex items-center justify-center shadow-md">
-                  {item.avatar}
-                </div>
-                <div>
-                  <h4 className="text-sm font-bold text-white">{t(item.name)}</h4>
-                  <p className="text-[11px] text-slate-400 mt-0.5">{t(item.role)}</p>
-                </div>
-              </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
 
         {/* Corporate Partners Showcase */}
@@ -121,12 +164,12 @@ export function Testimonials() {
           </div>
 
           <div className="flex flex-wrap justify-center items-center gap-4 sm:gap-6">
-            {corporatePartners.map((partner, idx) => (
+            {corporateList.map((partner: any, idx: number) => (
               <div
                 key={idx}
                 className="px-5 py-3 rounded-2xl bg-slate-900/90 border border-slate-800 text-slate-300 font-bold text-xs sm:text-sm hover:border-indigo-500/40 hover:text-white transition"
               >
-                {partner}
+                {renderText(partner)}
               </div>
             ))}
           </div>

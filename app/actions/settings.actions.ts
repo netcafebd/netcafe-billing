@@ -31,6 +31,11 @@ export async function updateISPSettingsAction(data: any) {
     packagesJson,
     whyUsJson,
     ftpServersJson,
+    coverageDataJson,
+    testimonialsJson,
+    corporatePartnersJson,
+    footerAboutText,
+    btrcLicenseText,
   } = parsed.data;
 
   try {
@@ -57,6 +62,11 @@ export async function updateISPSettingsAction(data: any) {
           packagesJson,
           whyUsJson,
           ftpServersJson,
+          coverageDataJson,
+          testimonialsJson,
+          corporatePartnersJson,
+          footerAboutText,
+          btrcLicenseText,
         },
       });
     } else {
@@ -78,6 +88,11 @@ export async function updateISPSettingsAction(data: any) {
           packagesJson,
           whyUsJson,
           ftpServersJson,
+          coverageDataJson,
+          testimonialsJson,
+          corporatePartnersJson,
+          footerAboutText,
+          btrcLicenseText,
         },
       });
     }

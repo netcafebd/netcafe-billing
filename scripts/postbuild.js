@@ -13,7 +13,11 @@ function copyDirRecursive(src, dest) {
     if (entry.isDirectory()) {
       copyDirRecursive(srcPath, destPath);
     } else {
-      fs.copyFileSync(srcPath, destPath);
+      try {
+        fs.copyFileSync(srcPath, destPath);
+      } catch (e) {
+        // ignore locked files
+      }
     }
   }
 }
@@ -53,7 +57,10 @@ if (fs.existsSync(standaloneDir)) {
     "libquery_engine-debian-openssl-3.0.x.so.node",
     "libquery_engine-rhel-openssl-3.0.x.so.node",
   ];
-  const engineSourceDir = path.join(rootDir, "node_modules", "prisma");
+  const engineSourceDirs = [
+    path.join(rootDir, "node_modules", "prisma"),
+    path.join(rootDir, "node_modules", ".prisma", "client"),
+  ];
 
   const targetDirs = [
     path.join(standaloneDir, "node_modules", ".prisma", "client"),
@@ -64,25 +71,42 @@ if (fs.existsSync(standaloneDir)) {
   for (const tDir of targetDirs) {
     fs.mkdirSync(tDir, { recursive: true });
     for (const eFile of engineFiles) {
-      const srcFile = path.join(engineSourceDir, eFile);
-      if (fs.existsSync(srcFile)) {
-        fs.copyFileSync(srcFile, path.join(tDir, eFile));
-        console.log(`✔ Copied ${eFile} -> ${path.relative(rootDir, tDir)}`);
+      for (const sDir of engineSourceDirs) {
+        const srcFile = path.join(sDir, eFile);
+        if (fs.existsSync(srcFile)) {
+          fs.copyFileSync(srcFile, path.join(tDir, eFile));
+          console.log(`✔ Copied ${eFile} -> ${path.relative(rootDir, tDir)}`);
+          break;
+        }
       }
     }
   }
 
-  // 5. Inject thread limits & debug logger into standalone server.js
+  // 5. Copy standalone node_modules to root node_modules so root require("next") works natively
+  const standaloneNodeModules = path.join(standaloneDir, "node_modules");
+  const rootNodeModules = path.join(rootDir, "node_modules");
+  if (fs.existsSync(standaloneNodeModules)) {
+    console.log("--> Syncing standalone node_modules to root node_modules...");
+    copyDirRecursive(standaloneNodeModules, rootNodeModules);
+    console.log("✔ Synced standalone node_modules -> root node_modules");
+  }
+
+  // 6. Inject thread limits & module resolution into standalone server.js
   const standaloneServerJs = path.join(standaloneDir, "server.js");
   if (fs.existsSync(standaloneServerJs)) {
     let content = fs.readFileSync(standaloneServerJs, "utf8");
-    const threadLimitCode = `// Injected thread pool constraints & debug logger for CloudLinux shared hosting
+    const threadLimitCode = `// Injected thread pool constraints & module path resolver for CloudLinux shared hosting
 process.env.UV_THREADPOOL_SIZE = "1";
 process.env.TOKIO_WORKER_THREADS = "1";
 process.env.RAYON_NUM_THREADS = "1";
 
 const _fs = require("fs");
 const _path = require("path");
+
+if (!module.paths.includes(_path.join(__dirname, "node_modules"))) {
+  module.paths.unshift(_path.join(__dirname, "node_modules"));
+}
+
 const _origErr = console.error;
 console.error = function (...args) {
   try {
@@ -95,7 +119,7 @@ console.error = function (...args) {
     // Clean any prior injected block
     const cleanContent = content.replace(/\/\/ Injected thread pool constraints[\s\S]*?_origErr\.apply\(console, args\);\s*};\n?/g, "");
     fs.writeFileSync(standaloneServerJs, threadLimitCode + cleanContent, "utf8");
-    console.log("✔ Injected safe thread constraints and debug logger into .next/standalone/server.js");
+    console.log("✔ Injected safe thread constraints and module resolver into .next/standalone/server.js");
   }
 
   console.log("✔ Standalone bundle is ready for cPanel Passenger deployment!");

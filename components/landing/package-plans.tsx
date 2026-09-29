@@ -199,7 +199,7 @@ export function PackagePlans({ onSelectPackage, customPackagesJson, hotline }: P
             <span>{t({ bn: "সাশ্রয়ী মূল্যে সেরা ব্যান্ডউইথ", en: "Best Bandwidth at Affordable Prices" })}</span>
           </div>
 
-          <h2 className="text-3xl sm:text-4xl font-extrabold text-white tracking-tight">
+          <h2 className="text-3xl sm:text-4xl font-extrabold text-white leading-snug sm:leading-normal">
             {t({
               bn: "আপনার প্রয়োজন অনুযায়ী সেরা ইন্টারনেট প্যাকেজ",
               en: "Tailored High-Speed Internet Packages",
