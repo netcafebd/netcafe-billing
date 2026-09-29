@@ -6,7 +6,7 @@ import { customerCreateSchema, customerUpdateSchema } from "@/lib/validations/cu
 import bcrypt from "bcryptjs";
 import { revalidatePath } from "next/cache";
 import { logAuditEvent } from "@/lib/services/audit.service";
-import { CustomerStatus, Role } from "@prisma/client";
+import {  CustomerStatus, Role  } from "@/lib/constants/enums";
 
 export async function createCustomerAction(data: any) {
   const session = await requireAdmin();

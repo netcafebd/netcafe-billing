@@ -19,7 +19,7 @@ import {
   CheckCircle2,
   AlertCircle,
 } from "lucide-react";
-import { BillStatus } from "@prisma/client";
+import {  BillStatus  } from "@/lib/constants/enums";
 import { DEFAULT_BKASH_QR_IMAGE, getEffectiveBkashQr } from "@/lib/constants/qr";
 
 interface PayBillFormProps {

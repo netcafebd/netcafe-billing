@@ -4,7 +4,7 @@ import { requireAdmin } from "@/lib/auth/session";
 import { AdminHeader } from "@/components/admin/header";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { formatCurrency, formatMonthYear, MONTH_NAMES } from "@/lib/utils";
-import { BillStatus, PaymentStatus } from "@prisma/client";
+import {  BillStatus, PaymentStatus  } from "@/lib/constants/enums";
 import {
   TrendingUp,
   CreditCard,

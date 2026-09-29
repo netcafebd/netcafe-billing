@@ -6,7 +6,7 @@ import { billCreateSchema, generateMonthlyBillsSchema } from "@/lib/validations/
 import { BillService } from "@/lib/services/bill.service";
 import { logAuditEvent } from "@/lib/services/audit.service";
 import { revalidatePath } from "next/cache";
-import { BillStatus } from "@prisma/client";
+import {  BillStatus  } from "@/lib/constants/enums";
 
 export async function createBillAction(data: any) {
   const session = await requireAdmin();

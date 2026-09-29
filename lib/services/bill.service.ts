@@ -1,5 +1,5 @@
 import { prisma } from "@/lib/db/prisma";
-import { BillStatus } from "@prisma/client";
+import {  BillStatus  } from "@/lib/constants/enums";
 import { logAuditEvent } from "./audit.service";
 
 export class BillService {

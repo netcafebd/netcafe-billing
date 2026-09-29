@@ -1,5 +1,5 @@
 import { prisma } from "@/lib/db/prisma";
-import { BillStatus, PaymentMethod, PaymentStatus } from "@prisma/client";
+import {  BillStatus, PaymentMethod, PaymentStatus  } from "@/lib/constants/enums";
 import { logAuditEvent } from "./audit.service";
 
 export interface SubmitPaymentDTO {

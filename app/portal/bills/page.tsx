@@ -7,7 +7,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { StatusBadge } from "@/components/ui/badge";
 import { formatCurrency, formatDate, formatMonthYear } from "@/lib/utils";
-import { BillStatus } from "@prisma/client";
+import {  BillStatus  } from "@/lib/constants/enums";
 import { CreditCard, Receipt } from "lucide-react";
 
 export const dynamic = "force-dynamic";

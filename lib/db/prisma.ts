@@ -2,6 +2,8 @@ import type { PrismaClient as PrismaClientType } from "@prisma/client";
 import path from "path";
 import fs from "fs";
 
+declare const __non_webpack_require__: any;
+
 const globalForPrisma = globalThis as unknown as {
   prisma: PrismaClientType | undefined;
 };
@@ -59,27 +61,35 @@ if (process.platform === "linux") {
 
 // 3. Locate and load PrismaClient constructor
 function getPrismaClientClass(): any {
+  // Use native Node require if available to bypass webpack bundle interception
+  const nativeReq = typeof __non_webpack_require__ !== "undefined" ? __non_webpack_require__ : require;
+
   const candidateClientDirs = [
     path.join(process.cwd(), "prisma", "client"),
     path.join(process.cwd(), "node_modules", ".prisma", "client"),
     "/home2/netcafeb/nodevenv/netcafe-billing/20/lib/node_modules/.prisma/client",
+    path.join(process.cwd(), "node_modules", "@prisma", "client"),
+    "/home2/netcafeb/nodevenv/netcafe-billing/20/lib/node_modules/@prisma/client",
   ];
 
   for (const cDir of candidateClientDirs) {
-    if (fs.existsSync(path.join(cDir, "index.js"))) {
-      try {
-        const mod = require(cDir);
-        if (mod && mod.PrismaClient) {
-          return mod.PrismaClient;
+    for (const entryFile of ["index.js", "default.js"]) {
+      const fullPath = path.join(cDir, entryFile);
+      if (fs.existsSync(fullPath)) {
+        try {
+          const mod = nativeReq(fullPath);
+          if (mod && mod.PrismaClient) {
+            return mod.PrismaClient;
+          }
+        } catch (err: any) {
+          console.warn("[Prisma] Failed loading from " + fullPath + ":", err?.message);
         }
-      } catch (err: any) {
-        console.warn("[Prisma] Failed loading from " + cDir + ":", err?.message);
       }
     }
   }
 
   try {
-    const mod = require("@prisma/client");
+    const mod = nativeReq("@prisma/client");
     if (mod && mod.PrismaClient) {
       return mod.PrismaClient;
     }

@@ -1,7 +1,7 @@
 "use server";
 
 import { prisma } from "@/lib/db/prisma";
-import { BillStatus, CustomerStatus } from "@prisma/client";
+import {  BillStatus, CustomerStatus  } from "@/lib/constants/enums";
 
 export interface BillSearchResult {
   success: boolean;

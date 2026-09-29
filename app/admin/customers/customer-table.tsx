@@ -24,7 +24,7 @@ import {
   ChevronRight,
   ShieldAlert,
 } from "lucide-react";
-import { CustomerStatus } from "@prisma/client";
+import {  CustomerStatus  } from "@/lib/constants/enums";
 
 interface CustomerItem {
   id: string;

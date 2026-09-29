@@ -19,7 +19,7 @@ import {
   AlertTriangle,
   Info,
 } from "lucide-react";
-import { PaymentStatus } from "@prisma/client";
+import {  PaymentStatus  } from "@/lib/constants/enums";
 
 interface PaymentItem {
   id: string;

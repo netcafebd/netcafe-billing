@@ -3,7 +3,7 @@ import { prisma } from "@/lib/db/prisma";
 import { requireCustomer } from "@/lib/auth/session";
 import { CustomerHeader } from "@/components/customer/header";
 import { PayBillForm } from "./pay-bill-form";
-import { BillStatus } from "@prisma/client";
+import {  BillStatus  } from "@/lib/constants/enums";
 
 import { DEFAULT_BKASH_QR_IMAGE } from "@/lib/constants/qr";
 

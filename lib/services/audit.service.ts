@@ -1,5 +1,5 @@
 import { prisma } from "@/lib/db/prisma";
-import { Prisma } from "@prisma/client";
+import type { Prisma } from "@prisma/client";
 
 export interface CreateAuditLogParams {
   userId?: string | null;
@@ -17,7 +17,7 @@ export async function logAuditEvent(params: CreateAuditLogParams) {
         action: params.action,
         entityType: params.entityType,
         entityId: params.entityId || null,
-        metadata: params.metadata || Prisma.JsonNull,
+        metadata: params.metadata || undefined,
       },
     });
   } catch (err) {

@@ -20,7 +20,7 @@ import {
   ShieldCheck,
   History,
 } from "lucide-react";
-import { BillStatus } from "@prisma/client";
+import {  BillStatus  } from "@/lib/constants/enums";
 
 export const dynamic = "force-dynamic";
 

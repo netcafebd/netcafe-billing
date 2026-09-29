@@ -3,7 +3,7 @@ import { prisma } from "@/lib/db/prisma";
 import { requireAdmin } from "@/lib/auth/session";
 import { AdminHeader } from "@/components/admin/header";
 import { CustomerTableClient } from "./customer-table";
-import { CustomerStatus } from "@prisma/client";
+import {  CustomerStatus  } from "@/lib/constants/enums";
 
 export const dynamic = "force-dynamic";
 

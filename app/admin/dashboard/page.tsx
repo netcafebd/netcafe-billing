@@ -7,7 +7,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/com
 import { StatusBadge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { formatCurrency, formatDateTime, formatMonthYear } from "@/lib/utils";
-import { BillStatus, CustomerStatus, PaymentStatus } from "@prisma/client";
+import {  BillStatus, CustomerStatus, PaymentStatus  } from "@/lib/constants/enums";
 import {
   Users,
   UserCheck,

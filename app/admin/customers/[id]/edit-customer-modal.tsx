@@ -8,7 +8,7 @@ import { Select } from "@/components/ui/select";
 import { Modal } from "@/components/ui/modal";
 import { updateCustomerAction } from "@/app/actions/customer.actions";
 import { Edit2 } from "lucide-react";
-import { CustomerStatus } from "@prisma/client";
+import {  CustomerStatus  } from "@/lib/constants/enums";
 
 interface EditCustomerModalProps {
   customer: {

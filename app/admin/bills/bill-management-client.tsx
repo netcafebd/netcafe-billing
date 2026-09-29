@@ -24,7 +24,7 @@ import {
   AlertCircle,
   CheckCircle2,
 } from "lucide-react";
-import { BillStatus } from "@prisma/client";
+import {  BillStatus  } from "@/lib/constants/enums";
 
 interface BillItem {
   id: string;
