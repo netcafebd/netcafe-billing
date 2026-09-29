@@ -9,7 +9,27 @@ const globalForPrisma = globalThis as unknown as {
 process.env.TOKIO_WORKER_THREADS = process.env.TOKIO_WORKER_THREADS || "1";
 process.env.UV_THREADPOOL_SIZE = process.env.UV_THREADPOOL_SIZE || "1";
 
-// 1. Locate Linux engine binary
+// 1. Sync uploaded prisma/client to node_modules and nodevenv
+const genPrismaDir = path.join(process.cwd(), "prisma", "client");
+if (fs.existsSync(genPrismaDir)) {
+  const targetSyncDirs = [
+    path.join(process.cwd(), "node_modules", ".prisma", "client"),
+    "/home2/netcafeb/nodevenv/netcafe-billing/20/lib/node_modules/.prisma/client",
+  ];
+  for (const tDir of targetSyncDirs) {
+    try {
+      fs.mkdirSync(tDir, { recursive: true });
+      for (const f of fs.readdirSync(genPrismaDir)) {
+        const src = path.join(genPrismaDir, f);
+        if (fs.statSync(src).isFile()) {
+          fs.copyFileSync(src, path.join(tDir, f));
+        }
+      }
+    } catch (_) {}
+  }
+}
+
+// 2. Locate Linux engine binary
 if (process.platform === "linux") {
   const engineNames = [
     "libquery_engine-rhel-openssl-3.0.x.so.node",
@@ -21,6 +41,8 @@ if (process.platform === "linux") {
     path.join(process.cwd(), "prisma", "client"),
     path.join(process.cwd(), "node_modules", ".prisma", "client"),
     path.join(process.cwd(), "node_modules", "@prisma", "client"),
+    "/home2/netcafeb/nodevenv/netcafe-billing/20/lib/node_modules/.prisma/client",
+    "/home2/netcafeb/nodevenv/netcafe-billing/20/lib/node_modules/@prisma/client",
   ];
 
   for (const cDir of candidateDirs) {
@@ -35,12 +57,12 @@ if (process.platform === "linux") {
   }
 }
 
-// 2. Locate and load PrismaClient constructor
+// 3. Locate and load PrismaClient constructor
 function getPrismaClientClass(): any {
-  // Option A: Try direct require from prisma/client (transferred by FTP)
   const candidateClientDirs = [
     path.join(process.cwd(), "prisma", "client"),
     path.join(process.cwd(), "node_modules", ".prisma", "client"),
+    "/home2/netcafeb/nodevenv/netcafe-billing/20/lib/node_modules/.prisma/client",
   ];
 
   for (const cDir of candidateClientDirs) {
@@ -56,7 +78,6 @@ function getPrismaClientClass(): any {
     }
   }
 
-  // Option B: Standard require('@prisma/client')
   try {
     const mod = require("@prisma/client");
     if (mod && mod.PrismaClient) {
@@ -82,7 +103,6 @@ function initPrisma(): PrismaClientType {
     }
   }
 
-  // Fallback proxy to prevent top-level SSR crash
   return new Proxy({} as PrismaClientType, {
     get(_, prop) {
       if (typeof prop === "string" && !prop.startsWith("$")) {

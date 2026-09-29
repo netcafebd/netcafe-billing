@@ -124,34 +124,44 @@ if (!module.paths.includes(_path.join(__dirname, "node_modules"))) {
   module.paths.unshift(_path.join(__dirname, "node_modules"));
 }
 
-// Auto-sync uploaded prisma/client -> node_modules/.prisma/client on server boot
-try {
-  const _genPrisma = _path.join(__dirname, "prisma", "client");
-  const _targetDotPrisma = _path.join(__dirname, "node_modules", ".prisma", "client");
-  if (_fs.existsSync(_genPrisma)) {
-    _fs.mkdirSync(_targetDotPrisma, { recursive: true });
-    for (const f of _fs.readdirSync(_genPrisma)) {
-      const src = _path.join(_genPrisma, f);
-      if (_fs.statSync(src).isFile()) {
-        _fs.copyFileSync(src, _path.join(_targetDotPrisma, f));
+// Auto-sync uploaded prisma/client -> node_modules/.prisma/client and nodevenv on server boot
+const _dotTargets = [
+  _path.join(__dirname, "node_modules", ".prisma", "client"),
+  "/home2/netcafeb/nodevenv/netcafe-billing/20/lib/node_modules/.prisma/client",
+];
+const _genPrisma = _path.join(__dirname, "prisma", "client");
+if (_fs.existsSync(_genPrisma)) {
+  for (const _target of _dotTargets) {
+    try {
+      _fs.mkdirSync(_target, { recursive: true });
+      for (const f of _fs.readdirSync(_genPrisma)) {
+        const src = _path.join(_genPrisma, f);
+        if (_fs.statSync(src).isFile()) {
+          _fs.copyFileSync(src, _path.join(_target, f));
+        }
       }
-    }
+    } catch (e) {}
   }
-} catch (e) {}
+}
 
-try {
-  const _genAtPrisma = _path.join(__dirname, "prisma", "at-client");
-  const _targetAtPrisma = _path.join(__dirname, "node_modules", "@prisma", "client");
-  if (_fs.existsSync(_genAtPrisma)) {
-    _fs.mkdirSync(_targetAtPrisma, { recursive: true });
-    for (const f of _fs.readdirSync(_genAtPrisma)) {
-      const src = _path.join(_genAtPrisma, f);
-      if (_fs.statSync(src).isFile()) {
-        _fs.copyFileSync(src, _path.join(_targetAtPrisma, f));
+const _atTargets = [
+  _path.join(__dirname, "node_modules", "@prisma", "client"),
+  "/home2/netcafeb/nodevenv/netcafe-billing/20/lib/node_modules/@prisma/client",
+];
+const _genAtPrisma = _path.join(__dirname, "prisma", "at-client");
+if (_fs.existsSync(_genAtPrisma)) {
+  for (const _target of _atTargets) {
+    try {
+      _fs.mkdirSync(_target, { recursive: true });
+      for (const f of _fs.readdirSync(_genAtPrisma)) {
+        const src = _path.join(_genAtPrisma, f);
+        if (_fs.statSync(src).isFile()) {
+          _fs.copyFileSync(src, _path.join(_target, f));
+        }
       }
-    }
+    } catch (e) {}
   }
-} catch (e) {}
+}
 
 const _origErr = console.error;
 console.error = function (...args) {
